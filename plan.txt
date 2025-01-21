@@ -1,0 +1,27 @@
+# project structure
+    controllers/
+        AdminController.php
+        CustomersController.php
+
+    models/
+        Database.php
+        Customer.php
+
+    views/
+        images/
+        includes/
+        layout/
+        style/
+            main.css 
+        about.php
+        food.php
+        location-contact.php
+        login.php
+        signup.php
+        menu.php
+        services.php 
+    
+    Autoloader.php 
+    index.php 
+    routes.php 
+
