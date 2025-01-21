@@ -67,5 +67,49 @@
             // require signup page
             require "views/signup.php";
         }
+
+        // login Action :
+        public static function loginAction() {
+            // set an empty error var
+            $error = "";
+
+            // handle request :
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                // handle empty fields
+                if(empty($_POST['email'])) { $error .= "Email Is Required! <br>"; }
+                if(empty($_POST['password'])) { $error .= "Password Is Required! <br>"; }
+
+                // if no empty fields :
+                if(empty($error)) {
+                    try {
+                        // check for valid email
+                        if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) || 
+                            !preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $_POST['email'])) {
+                            $error .= "Email Format Not Valid! <br>";
+                        }
+
+                        // proceed if no validation errors
+                        if(empty($error)) {
+                            // sanitize input
+                            $email    = htmlspecialchars(trim($_POST['email']));
+                            $password = htmlspecialchars(trim($_POST['password']));
+
+                            // login
+                            $login = new Customer;
+                            $login->login($email, $password);
+                        }
+                    } catch (\Exception $e) {
+                        $error .= $e->getMessage();
+                    }
+                }
+            }
+            // require login page
+            require_once "views/login.php";
+        }  
+
+        // customer home action
+        public static function customer_Home_Action() {
+            require_once "views/customerHome.php";
+        }
     }
 ?>

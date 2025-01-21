@@ -276,3 +276,13 @@
         font-size: 20px;
     }
 /* end footer */
+
+/* start customer-home */
+    .customer-home .container h2 {
+        border-bottom: 2px solid var(--main-color);
+        text-align: center;
+        width: 50%; 
+        margin: 0 auto; 
+        padding-bottom: 10px; 
+    }
+/* end customer-home */

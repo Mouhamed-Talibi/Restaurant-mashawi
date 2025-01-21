@@ -1,4 +1,5 @@
 <?php
+    use controllers\AdminController;
     use controllers\CustomersController;
     require_once "Autoloader.php";
 
@@ -19,7 +20,13 @@
                 CustomersController::signUp_Action();
                 break;
             case "login" :
-                CustomersController::signUp_Action();
+                CustomersController::loginAction();
+                break;
+            case "adminDashboard" :
+                AdminController::admin_Dashboard_Action();
+                break;
+            case "customerHome" :
+                CustomersController::customer_Home_Action();
                 break;
             default : 
                 "home";

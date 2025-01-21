@@ -46,8 +46,8 @@
             $isConnected = $this->db_connection();
             if($isConnected) {
                 // check email and correct password :
-                $stmt = $this->connection->prepare("SELECT id,email,password,role password FROM customers WHERE email=?");
-                $stmt->execute([$email, $password]);
+                $stmt = $this->connection->prepare("SELECT id,email,password,role FROM customers WHERE email=?");
+                $stmt->execute([$email]);
                 $customer = $stmt->fetch(PDO::FETCH_ASSOC);
                 if($customer && $customer['email'] === $email) {
                     if($customer['role'] === "customer") {
@@ -56,23 +56,35 @@
                             session_start();
                             $_SESSION['customerId'] = $customer['id'];
                             $_SESSION['customerEmail'] = $customer['email'];
-                            header('Location: routes.php?action=customerAccount');
+                            $_SESSION['customerRole'] = $customer['role'];
+                            header('Location: routes.php?action=customerHome');
+                            exit();
+                        } else {
+                            throw new \Exception("Incorrect Password !");
+                        }
+                    } elseif ($customer['role'] === "admin") {
+                        // verify password : 
+                        if(password_verify($password, $customer['password'])) {
+                            session_start();
+                            $_SESSION['adminId'] = $customer['id'];
+                            $_SESSION['adminEmail'] = $customer['email'];
+                            $_SESSION['adminRole'] = $customer['role'];
+                            header('Location: routes.php?action=adminDashboard');
                             exit();
                         } else {
                             throw new \Exception("Incorrect Password !");
                         }
                     } else {
-                        session_start();
-                        $_SESSION['adminId'] = $customer['id'];
-                        $_SESSION['adminEmail'] = $customer['email'];
-                        header('Location: routes.php?adminDashboard.php');
+                        header('Location: routes.php?action=home');
                         exit();
                     }
                 } else {
-                    throw new \Exception("Email Not Exists !");
+                    throw new \Exception("Incorrect Email !");
                 }
             } else {
                 throw new \Exception("Db Connection Failed !");
             }
         }
+
+
     }
