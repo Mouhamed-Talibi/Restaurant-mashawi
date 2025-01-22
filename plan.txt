@@ -8,6 +8,11 @@
         Customer.php
 
     views/
+        admin/
+            includes/
+                adminSession.php
+                nav.php
+            dashboard.php
         images/
         includes/
         layout/

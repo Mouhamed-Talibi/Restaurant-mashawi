@@ -111,5 +111,20 @@
         public static function customer_Home_Action() {
             require_once "views/customerHome.php";
         }
+
+        // page error action
+        public static function page_Error_Action( ) {
+            require_once "views/pageError.php";
+        }
+
+        // logout actiion 
+        public static function logout_Action() {
+            session_start(); 
+            session_unset();
+            session_destroy();
+            session_write_close();  
+            header("Location: routes.php?action=home");
+            exit();
+        }
     }
 ?>

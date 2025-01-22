@@ -285,4 +285,32 @@
         margin: 0 auto; 
         padding-bottom: 10px; 
     }
+
+    div .cart:hover {
+        background-color: #e4cd03;
+        border-radius: 3px;
+        padding: 3px;
+    }
+
+    div .cart i{
+        color: #e4cd03;
+        font-size: 20px;
+    }
+
+    div .cart:hover a{
+        color: #000
+    }
+
+    div .cart:hover i{
+        color: black;
+    }
+
+    .logout:hover {
+        background-color: red !important;
+        padding: 5px 5px;
+    }
+
+    .logout:hover i{
+        color: black;
+    }
 /* end customer-home */
