@@ -18,13 +18,32 @@
             </div>
 
             <!-- Form -->
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="routes.php?action=addCategory" method="POST" enctype="multipart/form-data">
                 <div class="row bg-dark text-light g-3 p-4 w-75 mx-auto rounded-4">
+
+                    <!-- display errors -->
+                    <?php
+                        if(!empty($error )) { 
+                            ?>
+                                <div class="alert alert-danger"role="alert">
+                                    <?= $error ?>
+                                </div>
+                            <?php
+                        }
+                        if(!empty($message )) { 
+                            ?>
+                                <div class="alert alert-success"role="alert">
+                                    <?= $message ?>
+                                </div>
+                            <?php
+                        }
+                    ?>
+
                     <!-- Category Name -->
                     <div class="col-12">
                         <div class="form-group">
                             <label for="category_name" class="form-label">Category Name</label>
-                            <input type="text" name="category_name" id="category_name" class="form-control" required>
+                            <input type="text" name="category_name" id="category_name" class="form-control">
                         </div>
                     </div>
             
@@ -32,7 +51,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="category_description" class="form-label">Category Description</label>
-                            <textarea name="category_description" id="category_description" class="form-control" rows="4" required></textarea>
+                            <textarea name="category_description" id="category_description" class="form-control" rows="4"></textarea>
                         </div>
                     </div>
             
@@ -40,7 +59,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="category_image" class="form-label">Category Image</label>
-                            <input type="file" name="category_image" id="category_image" class="form-control" required>
+                            <input type="file" name="category_image" id="category_image" class="form-control">
                         </div>
                     </div>
             
