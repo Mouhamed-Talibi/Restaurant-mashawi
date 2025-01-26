@@ -42,6 +42,9 @@
             case "addProduct" :
                 AdminController::add_Product_Action();
                 break;
+            case "adminProducts" :
+                AdminController::admin_products();
+                break;
             case "adminProfile" :
                 AdminController::admin_Profile_Action();
                 break;
