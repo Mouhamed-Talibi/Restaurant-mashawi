@@ -34,6 +34,27 @@
                 throw new \Exception("Database connection failed.");
             }
         }
+
+        // add-product method : 
+        public function add_product($name, $description, $price, $image, $categoryId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("
+                                    INSERT INTO products(product_name, product_description, product_price, product_image, category_id)
+                                    VALUES(?, ?, ?, ?, ?)
+                    ");
+                    return $stmt->execute([$name, $description, $price, $image, $categoryId]);
+                } catch (\Exception $e) {
+                    error_log("Error adding Product: " . $e->getMessage());
+                    return false;
+                }
+            } else {
+                throw new \Exception("Db Connection Failed !");
+            }
+        }
+
+
     }
 
 ?>

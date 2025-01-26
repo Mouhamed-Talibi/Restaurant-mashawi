@@ -23,10 +23,11 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Actions
+                    Pages
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="routes.php?action=adminProfile">My Profile</a></li>
+                        <li><a class="dropdown-item" href="routes.php?action=adminProducts">Food</a></li>
                         <li><a class="dropdown-item" href="routes.php?action=addCategory">Add Category</a></li>
                         <li><a class="dropdown-item" href="routes.php?action=addProduct">Add Product</a></li>
                     </ul>
