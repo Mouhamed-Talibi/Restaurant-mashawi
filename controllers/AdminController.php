@@ -4,6 +4,7 @@
     use models\Customer;
     use models\Admin;
     use models\Database;
+    use PDO;
 
     class AdminController {
         // dashbaord Action 
@@ -189,6 +190,32 @@
             require_once "views/admin/products.php";
         }
 
+        // explore food 
+        public static function admin_explore_food() {
+            $error = "";
+            $products = [];
+        
+            if (isset($_GET['catId'])) {
+                // Sanitize and validate the category_id
+                $category_id = filter_var($_GET['catId'], FILTER_VALIDATE_INT);
+                
+                // Check if category_id is valid
+                if ($category_id === false) {
+                    $error .= "Invalid Category ID!";
+                } else {
+                    try {
+                        // Instantiate Admin class and fetch products
+                        $admin = new Admin();
+                        $products = $admin->explore_Food($category_id);
+                        require_once "views/admin/food.php";
+                        exit();
+                    } catch (Exception $e) {
+                        $error .= "Something went wrong while fetching food products. Please try again" . $e->getMessage();
+                    }
+                }
+            }
+        }
+
         // admin menu action :
         public static function admin_Menu_Action() {
             require_once "views/admin/menu.php";
@@ -207,6 +234,29 @@
         // admin profile action :
         public static function admin_Profile_Action() {
             require_once "views/admin/profile.php";
+        }
+
+        // edit category action :
+        public static function edit_Category_Action() {
+            $error = "";
+            $categoryData = [];
+
+            if(isset($_GET['catId'])) {
+                try {
+                    if(filter_var($_GET['catId'], FILTER_VALIDATE_INT)) {
+                        $categoryId = intval($_GET['catId']);
+                    } else {
+                        $error .= "Invalid Category Id !";
+                    }
+                    // get category data : 
+                    $admin = new Admin();
+                    $categoryData = $admin->edit_category($categoryId);
+                    require_once "views/admin/edit_category.php";
+                    exit();
+                } catch (Exception $e) {
+                    $error .= "something went wrong : " . $e->getMessage();
+                }
+            }
         }
     }
 ?>

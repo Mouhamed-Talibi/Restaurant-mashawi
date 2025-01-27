@@ -40,9 +40,9 @@
                                         <h3 class="fw-bold mb-2 text-white"> <?= $category['category_name']?> </h3>
                                         <p class="text-secondary"> <?= $category['category_description'] ?> </p>
                                         <div class="d-flex justify-content-center gap-2 mt-3">
-                                            <a href="#" class="btn btn-sm btn-secondary px-2 rounded-2">Edit</a>
-                                            <a href="#" class="btn btn-sm btn-danger px-2 rounded-2">Delete</a>
-                                            <a href="#" class="btn btn-sm btn-primary px-2 rounded-2">Explore Products</a>
+                                            <a href="routes.php?action=editCategory&catId=<?= $category['id']?>" class="btn btn-sm btn-secondary px-2 rounded-2">Edit</a>
+                                            <a href="routes.php?action=deleteCategory&catId=<?= $category['id']?>" class="btn btn-sm btn-danger px-2 rounded-2">Delete</a>
+                                            <a href="routes.php?action=exploreFood&catId=<?= $category['id']?>" class="btn btn-sm btn-primary px-2 rounded-2">Explore Products</a>
                                         </div>
                                     </div>
                                 </div>

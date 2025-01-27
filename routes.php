@@ -45,8 +45,14 @@
             case "adminProducts" :
                 AdminController::admin_products();
                 break;
+            case "exploreFood" :
+                AdminController::admin_explore_food();
+                break;
             case "adminProfile" :
                 AdminController::admin_Profile_Action();
+                break;
+            case "editCategory" :
+                AdminController::edit_Category_Action();
                 break;
             case "logout":
                 CustomersController::logout_Action();
