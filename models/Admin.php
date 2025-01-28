@@ -1,5 +1,6 @@
 <?php
     namespace models;
+    use Exception;
     use models\Database;
     use PDO;
 
@@ -14,7 +15,7 @@
             $this->connection = $database->connect();
             // check for connection
             if ($this->connection === null) {
-                throw new \Exception("DB Connection Failed!");
+                throw new Exception("DB Connection Failed!");
             }
             return $this->connection;
         }
@@ -26,12 +27,12 @@
                 try {
                     $stmt = $isConnected->prepare("INSERT INTO categories (category_name, category_description, category_image) VALUES (?, ?, ?)");
                     return $stmt->execute([$categoryName, $categoryDescription, $categoryImage]); // Return success status
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     error_log("Error adding category: " . $e->getMessage());
                     return false;
                 }
             } else {
-                throw new \Exception("Database connection failed.");
+                throw new Exception("Database connection failed.");
             }
         }
 
@@ -45,12 +46,12 @@
                                     VALUES(?, ?, ?, ?, ?)
                     ");
                     return $stmt->execute([$name, $description, $price, $image, $categoryId]);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     error_log("Error adding Product: " . $e->getMessage());
                     return false;
                 }
             } else {
-                throw new \Exception("Db Connection Failed !");
+                throw new Exception("Db Connection Failed !");
             }
         }
 
@@ -78,16 +79,16 @@
         
                     // Check if products exist for the given category
                     if ($stmt->rowCount() < 1) {
-                        throw new \Exception("No Available Food For This Category!");
+                        throw new Exception("No Available Food For This Category!");
                     }
                     return $stmt->fetchAll(PDO::FETCH_ASSOC); 
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // Log the error with sanitized message
                     error_log("Error Fetching Products with Category: " . htmlspecialchars($e->getMessage()));
                     return [];
                 }
             } else {
-                throw new \Exception("DB Connection Failed!");
+                throw new Exception("DB Connection Failed!");
             }
         }    
 
@@ -100,42 +101,79 @@
                     $query = $isConnected->prepare("SELECT * FROM categories WHERE id=?");
                     $query->execute([$category_id]);
                     if($query->rowCount() == 0) {
-                        throw new \Exception("This Category Not Found !");
+                        throw new Exception("This Category Not Found !");
                     }
                     return $query->fetch(PDO::FETCH_ASSOC);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     error_log("Something went wrong !!") . $e->getMessage();
                     return false;
                 }
+            } else {
+                throw new Exception("Db Connection Failed !");
             }
         }
 
-        // Update category method 
-        public function update_Category($newName, $newDescription, $newimage, $category_id) {
+        // get category image method
+        public function get_Category_Image($category_id) {
             $isConnected = $this->db_connection();
-            if($isConnected) {
+            if ($isConnected) {
                 try {
-                    // update category
-                    if(!empty($newName) && !empty($newDescription) && !empty($newimage) && !empty($category_id)) {
-                        $stmt = $isConnected->prepare("
+                    $stmt = $isConnected->prepare("SELECT category_image FROM categories WHERE id=?");
+                    $stmt->execute([$category_id]);
+                    if ($stmt->rowCount() > 0) {
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                        return $result['category_image']; // Return only the image path
+                    } else {
+                        throw new Exception("Category Not Found !");
+                    }
+                } catch (Exception $e) {
+                    error_log("Getting Category Image Failed ! " . $e->getMessage());
+                    return false;
+                }
+            }
+        }        
+
+        // Update category method 
+        public function update_Category($newName, $newDescription, $newImage, $category_id) {
+            $isConnected = $this->db_connection();
+            if ($isConnected) {
+                try {
+                    if (!empty($newName) && !empty($newDescription) && !empty($category_id)) {
+                        // If a new image is provided
+                        if (!empty($newImage)) {
+                            $stmt = $isConnected->prepare("
                                 UPDATE categories
                                 SET 
-                                    category_name = ?,
-                                    category_description,
-                                    category_image
+                                    category_name = ?, 
+                                    category_description = ?, 
+                                    category_image = ?
                                 WHERE 
-                                    id=?
-                        ");
-                        return $stmt->execute([$newName, $newDescription, $newimage, $category_id]);
+                                    id = ?
+                            ");
+                            return $stmt->execute([$newName, $newDescription, $newImage, $category_id]);
+                        } else {
+                            // If no new image is provided
+                            $stmt = $isConnected->prepare("
+                                UPDATE categories
+                                SET 
+                                    category_name = ?, 
+                                    category_description = ?
+                                WHERE 
+                                    id = ?
+                            ");
+                            return $stmt->execute([$newName, $newDescription, $category_id]);
+                        }
                     }
-                } catch (\Exception $e) {
-                    error_log("Something went wrong when updating this category : ") . $e->getMessage();
+                    // If required fields are empty
+                    return false;
+                } catch (Exception $e) {
+                    error_log("Something went wrong when updating this category: " . $e->getMessage());
                     return false;
                 }
             } else {
-                throw new \Exception("Db connection failed !");
+                throw new Exception("DB connection failed!");
             }
-        }
+        }   
     }
 
 ?>

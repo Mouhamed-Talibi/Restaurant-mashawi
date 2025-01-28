@@ -34,15 +34,15 @@
                             <div class="col">
                                 <div class="menu-card p-4 bg-dark shadow-sm rounded-3 h-100">
                                     <div class="image mb-3 text-center">
-                                        <img src="<?= $category['category_image'] ?>" alt="" class="img-fluid rounded-rectangle" style="width: 200px; height: 120px; object-fit: contain;">
+                                        <img src="<?= htmlspecialchars($category['category_image']) ?>" alt="" class="img-fluid rounded-rectangle" style="width: 200px; height: 120px; object-fit: contain;">
                                     </div>
                                     <div class="infos text-center">
-                                        <h3 class="fw-bold mb-2 text-white"> <?= $category['category_name']?> </h3>
-                                        <p class="text-secondary"> <?= $category['category_description'] ?> </p>
+                                        <h3 class="fw-bold mb-2 text-white"> <?= htmlspecialchars($category['category_name']) ?> </h3>
+                                        <p class="text-secondary"> <?= htmlspecialchars($category['category_description']) ?> </p>
                                         <div class="d-flex justify-content-center gap-2 mt-3">
-                                            <a href="routes.php?action=editCategory&catId=<?= $category['id']?>" class="btn btn-sm btn-secondary px-2 rounded-2">Edit</a>
-                                            <a href="routes.php?action=deleteCategory&catId=<?= $category['id']?>" class="btn btn-sm btn-danger px-2 rounded-2">Delete</a>
-                                            <a href="routes.php?action=exploreFood&catId=<?= $category['id']?>" class="btn btn-sm btn-primary px-2 rounded-2">Explore Products</a>
+                                            <a href="routes.php?action=editCategory&catId=<?= htmlspecialchars($category['id']) ?>" class="btn btn-sm btn-secondary px-2 rounded-2">Edit</a>
+                                            <a href="routes.php?action=deleteCategory&catId=<?= htmlspecialchars($category['id']) ?>" class="btn btn-sm btn-danger px-2 rounded-2">Delete</a>
+                                            <a href="routes.php?action=exploreFood&catId=<?= htmlspecialchars($category['id']) ?>" class="btn btn-sm btn-primary px-2 rounded-2">Explore Products</a>
                                         </div>
                                     </div>
                                 </div>

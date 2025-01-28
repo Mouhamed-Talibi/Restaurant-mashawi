@@ -36,3 +36,22 @@
     index.php 
     routes.php 
 
+
+update category action logic :    
+    - error var 
+    - success var = false;
+    - maxsize var 
+    - allowedtypes var 
+    - unliked var = false;
+    - check for server request method 
+    - check for empty fields 
+    - validate id 
+    - sanitize fields 
+    - check if new image uploaded 
+    - if new image uploaded :
+        - unlink the older one 
+        - if unlinked  = true , & if the new file is uploaded 
+        - update all fields 
+    - if not 
+        - update name and description and keep the last image
+

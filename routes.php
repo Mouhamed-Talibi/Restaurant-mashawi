@@ -54,6 +54,9 @@
             case "editCategory" :
                 AdminController::edit_Category_Action();
                 break;
+            case "updateCategory" :
+                AdminController::update_Category_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;

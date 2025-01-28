@@ -258,5 +258,111 @@
                 }
             }
         }
+
+        // update category action :
+        public static function update_Category_Action() {
+            $error = "";
+            $message = "";
+            $success = false;
+            $unlinked = false;
+            $allowedtypes = ['image/jpg', 'image/jpeg', 'image/png'];
+            $maxFileSize = 3 * 1024 * 1024; // 3MB
+        
+            // Check for server request
+            if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                // Check for empty fields
+                if (empty($_POST['category_name'])) { $error .= "Category Name Required ! <br>"; }
+                if (empty($_POST['category_description'])) { $error .= "Category Description Required ! <br>"; }
+                if (empty($_POST['category_id'])) { $error .= "Category Id Required ! <br>"; }
+        
+                // Validate ID and sanitize fields
+                if (filter_var($_POST['category_id'], FILTER_VALIDATE_INT)) {
+                    $category_id = intval(filter_input(INPUT_POST, 'category_id', FILTER_SANITIZE_NUMBER_INT));
+                } else {
+                    $error .= "Invalid Category Id ! <br>";
+                }
+                $newCategoryName = trim(filter_input(INPUT_POST, 'category_name', FILTER_SANITIZE_SPECIAL_CHARS));
+                $newCategoryDescription = trim(filter_input(INPUT_POST, 'category_description', FILTER_SANITIZE_SPECIAL_CHARS));
+        
+                // If a new image is uploaded
+                if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
+                    $admin = new Admin();
+                    $olderImage = $admin->get_Category_Image($category_id); // This now returns the image path directly
+        
+                    // If the old image exists, delete it
+                    if (!empty($olderImage) && file_exists($olderImage)) {
+                        if ($unlinked = unlink($olderImage)) {
+                            // Handle the new image
+                            $newCategoryImage = $_FILES['category_image'];
+                            $imageName = uniqid() . "_" . basename($newCategoryImage['name']);
+                            $imageTmp = $newCategoryImage['tmp_name'];
+                            $imageSize = $newCategoryImage['size'];
+                            $imageType = $newCategoryImage['type'];
+                            $imageFolder = "views/admin/uploads/categories/";
+                            $newCategoryImagePath = $imageFolder . $imageName;
+        
+                            // Check size and type
+                            if (!in_array($imageType, $allowedtypes)) {
+                                $error .= "Invalid Image Type, Allowed(PNG, JPG, JPEG) ! <br>";
+                            }
+                            if ($imageSize > $maxFileSize) {
+                                $error .= "Image Size Must Be Less Than 3 MB ! <br>";
+                            }
+        
+                            // If the file is moved successfully
+                            if (move_uploaded_file($imageTmp, $newCategoryImagePath)) {
+                                try {
+                                    $success = $admin->update_Category($newCategoryName, $newCategoryDescription, $newCategoryImagePath, $category_id);
+                                    if ($success) {
+                                        $message .= "
+                                            Category Updated Successfully ✔
+                                            <script>
+                                                setTimeout(function() {
+                                                    window.location.href = 'routes.php?action=adminMenu';
+                                                }, 1000);
+                                            </script>
+                                        ";
+                                    } else {
+                                        $error .= "Failed To Update The Category !";
+                                    }
+                                } catch (Exception $e) {
+                                    error_log("Error With Update Category Action: " . $e->getMessage());
+                                }
+                            } else {
+                                $error .= "There Is A Problem With Image Path !";
+                            }
+                        } else {
+                            $error .= "Failed To Delete The Old Image ! <br>";
+                        }
+                    } else {
+                        $error .= "Older Image Not Found !!";
+                    }
+                } else {
+                    // Update name & description only
+                    try {
+                        $admin = new Admin();
+                        $olderImage = $admin->get_Category_Image($category_id); // This now returns the image path directly
+                        $success = $admin->update_Category($newCategoryName, $newCategoryDescription, $olderImage, $category_id);
+                        if ($success) {
+                            $message .= "
+                                Category Updated Successfully ✔
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'routes.php?action=adminMenu';
+                                    }, 1000);
+                                </script>
+                            ";
+                        } else {
+                            $error .= "Failed To Update The Category !";
+                        }
+                    } catch (Exception $e) {
+                        error_log("A Problem With Updating The Name And The Description: " . $e->getMessage());
+                    }
+                }
+            }
+        
+            // Include the add-category view to display errors or success messages
+            require_once "views/admin/edit_category.php";
+        }
     }
 ?>

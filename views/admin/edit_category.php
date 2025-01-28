@@ -10,11 +10,11 @@
     ob_start();
 ?>
 
-    <!-- Start Edit Category -->
-    <div class="edit-category py-5">
+    <!-- Start edit Category -->
+    <div class="category my-5">
         <div class="container">
             <!-- Heading Section -->
-            <div class="special-heading text-center mb-5 mt-5">
+            <div class="special-heading text-center mb-5" style="margin-top: 90px;">
                 <h1 class="fw-bold fs-1">
                     <?php if ($categoryData): ?>
                         Editing <?= htmlspecialchars($categoryData['category_name']) ?>
@@ -24,58 +24,64 @@
                 </h1>
             </div>
 
-            <?php if ($categoryData): ?>
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <!-- Display Error -->
-                        <?php if (!empty($error)): ?>
-                            <div class="alert alert-danger" role="alert">
-                                <?= htmlspecialchars($error) ?>
-                            </div>
-                        <?php endif; ?>
+            <!-- Form -->
+            <form action="routes.php?action=updateCategory" method="POST" enctype="multipart/form-data">
+                <div class="row bg-dark text-light g-3 p-4 w-75 mx-auto rounded-4">
 
-                        <!-- Edit Category Form -->
-                        <form class="p-4 border rounded shadow-sm bg-dark">
-                            <!-- Category Name -->
-                            <div class="mb-3">
-                                <label for="categoryName" class="form-label text-light fw-bold">Category Name</label>
-                                <input type="text" class="form-control" id="categoryName" name="category_name" 
-                                    value="<?= htmlspecialchars($categoryData['category_name']) ?>">
-                            </div>
-
-                            <!-- Category Description -->
-                            <div class="mb-3">
-                                <label for="categoryDescription" class="form-label text-light fw-bold">Category Description</label>
-                                <textarea class="form-control" id="categoryDescription" name="category_description" rows="4" >
-                                    <?= htmlspecialchars($categoryData['category_description']) ?>
-                                </textarea>
-                            </div>
-
-                            <!-- Category Image -->
-                            <div class="mb-3">
-                                <label for="categoryImage" class="form-label text-light fw-bold">Category Image</label>
-                                <div class="mb-3">
-                                    <img src="<?= htmlspecialchars($categoryData['category_image']) ?>" 
-                                        alt="Category Image" class="img-fluid rounded w-50 h-50 d-block mx-auto">
+                    <!-- display errors -->
+                    <?php
+                        if(!empty($error )) { 
+                            ?>
+                                <div class="alert alert-danger"role="alert">
+                                    <?= $error ?>
                                 </div>
-                                <input type="file" class="form-control" id="categoryImage" name="category_image">
-                            </div>
+                            <?php
+                        }
+                        if(!empty($message )) { 
+                            ?>
+                                <div class="alert alert-success"role="alert">
+                                    <?= $message ?>
+                                </div>
+                            <?php
+                        }
+                    ?>
 
-                            <!-- Submit Button -->
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-warning w-50 d-block mx-auto">Update Category</button>
+                    <?php if($categoryData) : ?>
+                        <!-- Category Name -->
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input type="hidden" name="category_id" value="<?= htmlspecialchars($categoryData['id']) ?>">
+                                <label for="category_name" class="form-label">Category Name</label>
+                                <input type="text" name="category_name" id="category_name" value="<?= htmlspecialchars($categoryData['category_name']) ?>" class="form-control">
                             </div>
-                        </form>
+                        </div>
+                
+                        <!-- Category Description -->
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="category_description" class="form-label">Category Description</label>
+                                <textarea name="category_description" id="category_description" class="form-control" rows="4"> <?= htmlspecialchars($categoryData['category_description']) ?> </textarea>
+                            </div>
+                        </div>
+                
+                        <!-- Category Image -->
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="category_image" class="form-label">Category Image</label>
+                                <input type="file" name="category_image" value="<?= htmlspecialchars($categoryData['category_image']) ?>" id="category_image" class="form-control">
+                            </div>
+                        </div>
+                
+                        <!-- Submit Button -->
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-warning w-50">Update Category</button>
+                        </div>
                     </div>
-                </div>
-            <?php else: ?>
-                <div class="alert alert-danger text-center">
-                    The category you are trying to edit does not exist.
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </form>            
         </div>
     </div>
-    <!-- End Edit Category -->
+    <!-- End edit Category -->
 
 <?php
     $content = ob_get_clean();

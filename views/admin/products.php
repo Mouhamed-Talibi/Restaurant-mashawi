@@ -27,15 +27,15 @@
                 <?php foreach ($productsQuery as $product) { ?>  
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="card shadow-sm h-100 d-flex flex-column">
-                            <img src="<?= $product['product_image'] ?>" alt="Product Image" class="card-img-top" style="height:250px; object-fit: cover;">
+                            <img src="<?= htmlspecialchars($product['product_image']) ?>" alt="Product Image" class="card-img-top" style="height:250px; object-fit: cover;">
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-center"> <?= $product['product_name'] ?> </h5>
-                                <p class="card-text flex-grow-1 text-center text-muted"> <?= $product['product_description'] ?> </p>
-                                <span class="badge bg-primary w-25 fs-9 text-start"><?= $product['product_price'] ?> MAD</span>
+                                <h5 class="card-title text-center"> <?= htmlspecialchars($product['product_name']) ?> </h5>
+                                <p class="card-text flex-grow-1 text-center text-muted"> <?= htmlspecialchars($product['product_description']) ?> </p>
+                                <span class="badge bg-primary w-25 fs-9 text-start"><?= htmlspecialchars($product['product_price']) ?> MAD</span>
                             </div>
                             <div class="card-footer d-flex justify-content-center gap-2">
-                                <a href="#" class="btn btn-secondary">Edit</a>
-                                <a href="#" class="btn btn-danger">Delete</a>
+                                <a href="routes.php?action=editProduct&proId=<?= htmlspecialchars($product['id'])?>" class="btn btn-secondary">Edit</a>
+                                <a href="routes.php?action=deleteProduct&proId=<?= htmlspecialchars($product['id'])?>" class="btn btn-danger" onclick="return confirm('are you sure you want to delete this product?')">Delete</a>
                             </div>
                         </div>
                     </div>
