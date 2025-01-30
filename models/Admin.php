@@ -105,7 +105,7 @@
                     }
                     return $query->fetch(PDO::FETCH_ASSOC);
                 } catch (Exception $e) {
-                    error_log("Something went wrong !!") . $e->getMessage();
+                    error_log("Something went wrong : ") . $e->getMessage();
                     return false;
                 }
             } else {
@@ -131,7 +131,7 @@
                     return false;
                 }
             }
-        }        
+        }     
 
         // Update category method 
         public function update_Category($newName, $newDescription, $newImage, $category_id) {
@@ -173,7 +173,23 @@
             } else {
                 throw new Exception("DB connection failed!");
             }
-        }   
+        }
+
+        // delete category method : 
+        public function delete_Category($category_id) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt =  $isConnected->prepare("DELETE FROM categories WHERE id=?");
+                    return $stmt->execute([$category_id]);
+                } catch (Exception $e) {
+                    error_log("Failed To Delete The Category :") . $e ->getMessage();
+                    return false;
+                }
+            } else {
+                throw new Exception("Db connection failed !");
+            }
+        }
     }
 
 ?>
