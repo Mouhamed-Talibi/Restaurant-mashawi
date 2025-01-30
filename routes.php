@@ -57,6 +57,12 @@
             case "updateCategory" :
                 AdminController::update_Category_Action();
                 break;
+            case "deleteCategory" :
+                AdminController::delete_Category_Action();
+                break;
+            case "destroyCategory" :
+                AdminController::destroy_Category_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
