@@ -251,12 +251,12 @@
                     // get category data : 
                     $admin = new Admin();
                     $categoryData = $admin->edit_category($categoryId);
-                    require_once "views/admin/edit_category.php";
-                    exit();
                 } catch (Exception $e) {
                     $error .= "something went wrong : " . $e->getMessage();
                 }
             }
+            require_once "views/admin/edit_category.php";
+            exit();
         }
 
         // update category action :
@@ -266,6 +266,7 @@
             $success = false;
             $unlinked = false;
             $allowedtypes = ['image/jpg', 'image/jpeg', 'image/png'];
+            $categoryData = [];
             $maxFileSize = 3 * 1024 * 1024; // 3MB
         
             // Check for server request
@@ -284,6 +285,10 @@
                 $newCategoryName = trim(filter_input(INPUT_POST, 'category_name', FILTER_SANITIZE_SPECIAL_CHARS));
                 $newCategoryDescription = trim(filter_input(INPUT_POST, 'category_description', FILTER_SANITIZE_SPECIAL_CHARS));
         
+                // Fetch the category data to repopulate the form if needed
+                $admin = new Admin();
+                $categoryData = $admin->edit_category($category_id);
+
                 // If a new image is uploaded
                 if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
                     $admin = new Admin();
@@ -360,9 +365,87 @@
                     }
                 }
             }
-        
             // Include the add-category view to display errors or success messages
             require_once "views/admin/edit_category.php";
+        }
+
+        // delete category action :
+        public static function delete_category_Action() {
+            $error = "";
+            $categoryData = [];
+
+            if(isset($_GET['catId']) && !empty($_GET['catId'])) {
+                if(filter_input(INPUT_GET, 'catId', FILTER_SANITIZE_NUMBER_INT)) {
+                    $category_id = intval($_GET['catId']);
+                    if($category_id) {
+                        $admin = new Admin();
+                        $categoryData = $admin->edit_category($category_id);
+                        if(!$categoryData) {
+                            $error .= "Category Not Found !";
+                        }
+                    }
+                }
+            }
+            require_once "views/admin/delete_category.php";
+        }
+
+        // destroy category action :
+        public static function destroy_Category_Action() {
+            $error = "";
+            $message = "";
+            $success = false;
+            $unlinked = false;
+
+            if (isset($_GET['catId']) && !empty($_GET['catId'])) {
+                $category_id = filter_input(INPUT_GET, 'catId', FILTER_SANITIZE_NUMBER_INT);
+                if (!$category_id) {
+                    $error .= "Invalid Category Id! <br>";
+                }
+
+                try {
+                    // Fetch category data
+                    $admin = new Admin();
+                    $categoryData = $admin->edit_category($category_id);
+
+                    // Check if category data is valid
+                    if (!$categoryData) {
+                        throw new Exception("Category Not Found!");
+                    }
+
+                    // Unlink the image from its folder
+                    $CategoryImage = $categoryData['category_image'];
+                    if (file_exists($CategoryImage)) {
+                        $unlinked = unlink($CategoryImage);
+                        if (!$unlinked) {
+                            throw new Exception("Failed to delete the old image! <br>");
+                        }
+                    } else {
+                        throw new Exception("Image file does not exist! <br>");
+                    }
+
+                    // Delete the category from the database
+                    $success = $admin->delete_Category($category_id);
+                    if ($success) {
+                        $message .= "
+                            Category Deleted Successfully ✔
+                            <script>
+                                setTimeout(function() {
+                                    window.location.href = 'routes.php?action=adminMenu';
+                                }, 1000);
+                            </script>
+                        ";
+                    } else {
+                        throw new Exception("Category Not Deleted! <br>");
+                    }
+                } catch (Exception $e) {
+                    $error = "Something Went Wrong With Category Deletion: " . $e->getMessage();
+                }
+            } else {
+                $error = "Category ID is missing!";
+            }
+
+            // Include the view to display errors or success messages
+            require_once "views/admin/delete_category.php";
         }
     }
 ?>
