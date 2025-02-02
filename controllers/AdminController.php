@@ -443,9 +443,42 @@
             } else {
                 $error = "Category ID is missing!";
             }
-
             // Include the view to display errors or success messages
             require_once "views/admin/delete_category.php";
+        }
+
+        // edit product action :
+        public static function edit_Product_Action()  {
+            $error = "";
+            $categoriesList = [];
+            $productData = [];
+
+            if(isset($_GET['proId']) && !empty($_GET['proId'])) {
+                // validate Product id :
+                if(filter_input(INPUT_GET, "proId", FILTER_VALIDATE_INT)) {
+                    $productId = $_GET['proId'];
+                } else {
+                    $error .= "Invalid Product Id <br>";
+                } 
+
+                // if no error
+                try {
+                    $admin = new Admin();
+                    $categoriesList = $admin->categories_List();
+                    $productData = $admin->get_Product_Data($productId);
+                } catch (Exception $e) {
+                    $error .= "Soemthing went Wrong : " . $e->getMessage();
+                }
+            }
+            // require edit page
+            require_once "views/admin/edit_product.php";
+        }
+
+        // update product Action 
+        public static function update_Product_Action() {
+            $error = "";
+            $success = "";
+            $message = "";
         }
     }
 ?>
