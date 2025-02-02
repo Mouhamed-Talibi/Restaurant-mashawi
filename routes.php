@@ -63,6 +63,9 @@
             case "destroyCategory" :
                 AdminController::destroy_Category_Action();
                 break;
+            case "editProduct" :
+                AdminController::edit_Product_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
