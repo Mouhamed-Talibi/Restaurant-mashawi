@@ -43,18 +43,22 @@
                                 <span class="badge bg-primary w-25 fs-9 text-start"><?= htmlspecialchars($product['product_price']) ?> MAD</span>
                             </div>
                             <div class="card-footer d-flex justify-content-center gap-2">
-                                <a href="#" class="btn btn-secondary">Edit</a>
-                                <a href="#" class="btn btn-danger">Delete</a>
+                                <a href="routes.php?action=editProduct&proId=<?= htmlspecialchars($product['product_id']) ?>" class="btn btn-secondary">Edit</a>
+                                <a href="routes.php?action=deleteProduct&proId=<?= htmlspecialchars($product['product_id']) ?>" class="btn btn-danger">Delete</a>
                             </div>
                         </div>
                     </div>
                 <?php } ?>
             </div>
-        <?php } else { ?>
-            <div class="alert alert-warning text-center">
-                No food products available for this category.
-            </div>
-        <?php } ?>
+        <?php 
+            } else { 
+        ?>
+                <div class="alert alert-warning text-center">
+                    No food products available for this category.
+                </div>
+        <?php 
+            } 
+        ?>
     </div>
 </div>
 <!-- End products -->
