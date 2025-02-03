@@ -226,7 +226,6 @@
                     }
                 } catch (Exception $e) {
                     error_log("Error in get_Product_Data: " . $e->getMessage());
-                    throw new Exception("Failed to retrieve product data. Please try again later.");
                 }
             }
         }
@@ -274,6 +273,22 @@
                 }
             } else {
                 throw new Exception("DB connection failed!");
+            }
+        }
+
+        // delete product method : 
+        public function delete_Product($product_id) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt =  $isConnected->prepare("DELETE FROM products WHERE id=?");
+                    return $stmt->execute([$product_id]);
+                } catch (Exception $e) {
+                    error_log("Failed To Delete The Product :") . $e ->getMessage();
+                    return false;
+                }
+            } else {
+                throw new Exception("Db connection failed !");
             }
         }
 
