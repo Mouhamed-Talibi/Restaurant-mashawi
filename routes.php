@@ -66,6 +66,15 @@
             case "editProduct" :
                 AdminController::edit_Product_Action();
                 break;
+            case "updateProduct" : 
+                AdminController::update_Product_Action();
+                break;
+            case "deleteProduct" :
+                AdminController::delete_Product_Action();
+                break;
+            case "destroyProduct" :
+                AdminController::destroy_Product_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
