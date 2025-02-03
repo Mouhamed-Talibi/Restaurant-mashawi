@@ -19,25 +19,36 @@
 
             <!-- check for produtData -->
             <?php 
-                // diplay errors
-                if(!empty($error)) {
-                    ?>
-                        <div class="alert alert-danger text-center" role="alert">
-                            <?= $error ?>
-                        </div>
-                    <?php
-                }
                 if($productData) :
             ?>
 
                 <!-- Form -->
                 <form action="routes.php?action=updateProduct" method="POST" enctype="multipart/form-data">
                     <div class="row bg-dark text-light g-3 p-4 w-75 mx-auto rounded-4">
-
+                        <!-- display errors -->
+                        <?php
+                            if(!empty($error)) {
+                                ?>
+                                    <div class="alert alert-danger text-center" role="alert">
+                                        <?php 
+                                            echo $error;
+                                        ?>
+                                    </div>
+                                <?php
+                            }
+                            if(!empty($message)) {
+                                ?>
+                                    <div class="alert alert-success text-center" role="alert">
+                                        <?= $message ?>
+                                    </div>
+                                <?php
+                            }
+                        ?>
                         <!-- Product Name -->
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="product_name" class="form-label">Product Name</label>
+                                <input type="hidden" name="product_id" value="<?= htmlspecialchars($productData['id']) ?>" id="" class="form-control">
                                 <input type="text" name="product_name" value="<?= htmlspecialchars($productData['product_name']) ?>" id="product_name" class="form-control">
                             </div>
                         </div>
@@ -77,7 +88,6 @@
 
                                     <!-- Display categories -->
                                     <?php
-                                        // Get the current category ID of the product
                                         $currentCategoryId = $productData['category_id'];
 
                                         foreach ($categoriesList as $category) {
