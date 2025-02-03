@@ -477,8 +477,186 @@
         // update product Action 
         public static function update_Product_Action() {
             $error = "";
-            $success = "";
             $message = "";
+            $success = false;
+            $allowedtypes = ['image/jpg', 'image/jpeg', 'image/png'];
+            $maxFileSize = 2 * 1024 * 1024; // 2MB Limit
+            $admin = new Admin();
+        
+            if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                // Validate required fields
+                if (empty($_POST['product_name'])) { $error .= "Product Name Required!<br>"; }
+                if (empty($_POST['product_description'])) { $error .= "Product Description Required!<br>"; }
+                if (empty($_POST['product_price'])) { $error .= "Product Price Required!<br>"; }
+                if (empty($_POST['product_id']) || !filter_var($_POST['product_id'], FILTER_VALIDATE_INT)) { 
+                    $error .= "Invalid Product ID!<br>"; 
+                }
+                if (empty($_POST['category_id']) || !filter_var($_POST['category_id'], FILTER_VALIDATE_INT)) { 
+                    $error .= "Product Category Required!<br>"; 
+                }
+        
+                // Sanitize inputs
+                $product_id = intval($_POST['product_id']);
+                $newProductName = trim(filter_input(INPUT_POST, 'product_name', FILTER_SANITIZE_SPECIAL_CHARS));
+                $newProductDescription = trim(filter_input(INPUT_POST, 'product_description', FILTER_SANITIZE_SPECIAL_CHARS));
+                $newCategory_id = intval($_POST['category_id']);
+        
+                // Validate & sanitize price
+                if (filter_var($_POST['product_price'], FILTER_VALIDATE_FLOAT)) {
+                    $newProduct_price = floatval($_POST['product_price']);
+                } else {
+                    $error .= "Invalid Product Price!<br>";
+                }
+        
+                // Fetch existing product data
+                $productData = $admin->get_Product_Data($product_id);
+                if (!$productData) {
+                    $error .= "Product not found!<br>";
+                }
+        
+                // Handle Image Upload
+                $newProductImagePath = $productData['product_image']; // Default to old image
+                if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+                    $newProductImage = $_FILES['product_image'];
+                    $imageName = uniqid() . "_" . basename($newProductImage['name']);
+                    $imageTmp = $newProductImage['tmp_name'];
+                    $imageSize = $newProductImage['size'];
+                    $imageType = $newProductImage['type'];
+                    $imageFolder = "views/admin/uploads/products/";
+                    $newProductImagePath = $imageFolder . $imageName;
+        
+                    // Image Validation
+                    if (!in_array($imageType, $allowedtypes)) {
+                        $error .= "Invalid Image Type, Allowed (PNG, JPG, JPEG)!<br>";
+                    }
+                    if ($imageSize > $maxFileSize) {
+                        $error .= "Image Size Must Be Less Than 2MB!<br>";
+                    }
+        
+                    // Stop execution if image validation fails
+                    if (!empty($error)) {
+                        require_once "views/admin/edit_product.php";
+                        exit;
+                    }
+        
+                    // Move uploaded image
+                    if (move_uploaded_file($imageTmp, $newProductImagePath)) {
+                        // Unlink old image if exists
+                        if (!empty($productData['product_image']) && file_exists($productData['product_image'])) {
+                            unlink($productData['product_image']);
+                        } else {
+                            $error .= "Failed To Unlink The Old Imae! <br>";
+                        }
+                    } else {
+                        $error .= "Failed to upload the new image!<br>";
+                    }
+                }
+        
+                // Stop execution if any validation errors exist
+                if (!empty($error)) {
+                    require_once "views/admin/edit_product.php";
+                    exit;
+                }
+        
+                // Update product in database
+                try {
+                    $success = $admin->update_Product($newProductName, $newProductDescription, $newProduct_price, $newProductImagePath, $newCategory_id, $product_id);
+                    if ($success) {
+                        $message .= "
+                            Product Updated Successfully ✔
+                            <script>
+                                setTimeout(function() {
+                                    window.location.href = 'routes.php?action=adminProducts';
+                                }, 1000);
+                            </script>
+                        ";
+                    } else {
+                        $error .= "Failed To Update The Product!<br>";
+                    }
+                } catch (Exception $e) {
+                    error_log("Error With Update Product Action: " . $e->getMessage());
+                }
+            }
+        
+            // Include edit page to display errors or success messages
+            require_once "views/admin/edit_product.php";
+        }    
+
+        // delete Product action :
+        public static function delete_Product_Action() {
+            $error = "";
+            $productData = [];
+            if(isset($_GET['proId']) && !empty($_GET['proId'])) {
+                if(filter_input(INPUT_GET, 'proId', FILTER_SANITIZE_NUMBER_INT)) {
+                    $product_id = intval($_GET['proId']);
+                    if($product_id) {
+                        $admin = new Admin();
+                        $productData = $admin->get_Product_Data($product_id);
+                        if(!$productData) {
+                            $error .= "Product Not Found !";
+                        }
+                    }
+                }
+            }
+            require_once "views/admin/delete_product.php";
         }
+
+        // destroy Product action :
+        public static function destroy_Product_Action() {
+            $error = "";
+            $message = "";
+            $success = false;
+            $unlinked = false;
+
+            if (isset($_GET['proId']) && !empty($_GET['proId'])) {
+                $product_id = filter_input(INPUT_GET, 'proId', FILTER_SANITIZE_NUMBER_INT);
+                if (!$product_id) {
+                    $error .= "Invalid Product Id! <br>";
+                }
+                try {
+                    // Fetch product data
+                    $admin = new Admin();
+                    $productData = $admin->get_Product_Data($product_id);
+
+                    // Check if product data is valid
+                    if (!$productData) {
+                        throw new Exception("Product Not Found!");
+                    }
+
+                    // Unlink the image from its folder
+                    $productImage = $productData['product_image'];
+                    if (file_exists($productImage)) {
+                        $unlinked = unlink($productImage);
+                        if (!$unlinked) {
+                            throw new Exception("Failed to delete the old image! <br>");
+                        }
+                    } else {
+                        throw new Exception("Image file does not exist! <br>");
+                    }
+
+                    // Delete the product from the database
+                    $success = $admin->delete_Product($product_id);
+                    if ($success) {
+                        $message .= "
+                            Product Deleted Successfully ✔
+                            <script>
+                                setTimeout(function() {
+                                    window.location.href = 'routes.php?action=adminProducts';
+                                }, 1000);
+                            </script>
+                        ";
+                    } else {
+                        throw new Exception("Product Not Deleted! <br>");
+                    }
+                } catch (Exception $e) {
+                    $error = "Something Went Wrong With Product Deletion: " . $e->getMessage();
+                }
+            } else {
+                $error = "Product ID is missing!";
+            }
+            // Include the view to display errors or success messages
+            require_once "views/admin/delete_product.php";
+        }
+
     }
 ?>
