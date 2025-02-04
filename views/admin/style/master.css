@@ -6,7 +6,7 @@
 
 /* start global rules */
 body {
-    font-family: "Jost", serif;
+    font-family: "Jost", 'Arial Narrow Bold', sans-serif;
     font-optical-sizing: auto;
     font-weight: weight;
     font-style: normal;
