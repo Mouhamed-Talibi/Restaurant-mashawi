@@ -292,5 +292,68 @@
             }
         }
 
+        // admin infos method
+        public function admin_Data($adminId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT id, first_name, last_name, email, password, role FROM customers WHERE id = ?");
+                    $stmt->execute([$adminId]);
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetch(PDO::FETCH_ASSOC);
+                    } else {
+                        throw new Exception("No Admin Found !");
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in admin infos : ") . $e->getMessage();
+                    return [];
+                }
+            }
+        } 
+
+        // update_admin_data method :
+        public function update_AdminData($firstName, $lastName, $newEmail, $adminId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("
+                        UPDATE customers
+                        SET 
+                            first_name = ?,
+                            last_name = ?, 
+                            email = ?
+                        WHERE 
+                            id = ?
+                    ");
+                    return $stmt->execute([$firstName, $lastName, $newEmail, $adminId]);
+                } catch (Exception $e) {
+                    error_log("Error in update admin data : ") . $e->getMessage();
+                    return false;
+                }
+            } else {
+                throw new Exception("Db connection failed ! ");
+            }
+        }
+
+        // change password method 
+        public function change_Password($newPassword, $adminId){
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $hahedPass = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $stmt = $isConnected->prepare("UPDATE customers 
+                                                    SET password = ?
+                                                    WHERE 
+                                                        id =? 
+                    ");
+                    return $stmt->execute([$hahedPass, $adminId]);
+                } catch (Exception $e) {
+                    error_log("Error in change password :") . $e->getMessage();
+                    return false;
+                }
+            }
+        }
+
+
     }
 ?>
