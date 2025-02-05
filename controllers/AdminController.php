@@ -6,6 +6,7 @@
     use models\Database;
     use PDO;
 
+
     class AdminController {
         // dashbaord Action 
         public static function admin_Dashboard_Action() {
@@ -233,6 +234,12 @@
 
         // admin profile action :
         public static function admin_Profile_Action() {
+            $admin = new Admin();
+            if(session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $adminData = $admin->admin_Data($_SESSION['adminId']);
             require_once "views/admin/profile.php";
         }
 
@@ -656,6 +663,201 @@
             }
             // Include the view to display errors or success messages
             require_once "views/admin/delete_product.php";
+        }
+
+        // admin edit profile action :
+        public static function admin_Edit_Profile_Action() {
+            $error = "";
+            $admin = new Admin();
+            $adminData = null; // Initialize to avoid undefined variable warning
+        
+            // Check if adminId is valid
+            if (isset($_GET['admId']) && !empty($_GET['admId'])) {
+                $adminId = filter_var($_GET['admId'], FILTER_VALIDATE_INT);
+                if (!$adminId) {
+                    $error .= "Admin Id Not Valid ! <br>";
+                }
+        
+                // Start session only if not already started
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+        
+                if (empty($error)) {
+                    // Get session info
+                    $adminInfos = [
+                        'id' => $_SESSION['adminId'],
+                        'adminEmail' => $_SESSION['adminEmail'],
+                        'adminRole' => $_SESSION['adminRole']
+                    ];
+        
+                    // Fetch admin data from the database
+                    $adminData = $admin->admin_Data($adminId);
+        
+                    if ($adminData && $adminInfos['id'] == $adminData['id'] && $adminInfos['adminEmail'] == $adminData['email'] && $adminInfos['adminRole'] == $adminData['role']) {
+                        require_once "views/admin/edit_profile.php";
+                        return;
+                    } else {
+                        $error .= "Unauthorized access or mismatch in admin data!<br>";
+                    }
+                }
+            } else {
+                $error .= "Admin Id is required!<br>";
+            }
+        
+            // Ensure $adminData is at least an empty array to avoid undefined variable warnings
+            if (!$adminData) {
+                $adminData = [];
+            }
+        
+            require_once "views/admin/edit_profile.php";
+        }         
+
+        // update admin profile action :
+        public static function update_Admin_Profile_Action() {
+            $error = "";
+            $success = false;
+            $message = "";
+            $adminData = [];
+            $admin = new Admin();
+        
+            if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                // Initialize adminId
+                $adminId = $_POST['id'] ?? null;
+                // Check empty fields
+                if (empty($adminId)) { $error .= "Admin ID is required! <br>"; }
+                if (empty($_POST['first_name'])) { $error .= "First Name is required! <br>"; }
+                if (empty($_POST['last_name'])) { $error .= "Last Name is required! <br>"; }
+                if (empty($_POST['email'])) { $error .= "Email is required! <br>"; }
+                // Validate ID
+                if (!filter_var($adminId, FILTER_VALIDATE_INT)) {
+                    $error .= "Admin ID is not valid! <br>";
+                }
+                // Validate Email
+                $newEmail = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+                if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+                    $error .= "Email format is not valid! <br>";
+                }
+                // Validate First Name
+                if (!preg_match('/^[\p{L}\s]+$/u', $_POST['first_name'])) {
+                    $error .= "First Name can only contain letters and spaces!<br>";
+                } else {
+                    $newFirst_name = htmlspecialchars($_POST['first_name']);
+                }
+                // Validate Last Name
+                if (!preg_match('/^[\p{L}\s]+$/u', $_POST['last_name'])) {
+                    $error .= "Last Name can only contain letters and spaces!<br>";
+                } else {
+                    $newLast_name = htmlspecialchars($_POST['last_name']);
+                }
+
+                if (empty($error)) {
+                    if (isset($newFirst_name, $newLast_name, $newEmail)) {
+                        $success = $admin->update_AdminData($newFirst_name, $newLast_name, $newEmail, $adminId);
+                        if ($success) {
+                            $message .= "
+                                Profile Updated Successfully ✔
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'routes.php?action=adminProfile';
+                                    }, 1000);
+                                </script>
+                            ";
+                        } else {
+                            $error .= "Failed to update your profile! <br>";
+                        }
+                    }
+                }
+            }
+            // Ensure $adminData is always defined
+            if (empty($adminData)) {
+                $adminData = $admin->admin_Data($adminId);
+            }
+            require_once "views/admin/edit_profile.php";
+        }   
+
+        // admin change password action : 
+        public static function change_Password_Action() {
+            $error = "";
+            $admin = new Admin();
+            if(session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $adminData = $admin->admin_Data($_SESSION['adminId']);
+            require_once "views/admin/change_password.php";
+        }
+
+        // admin update password action : 
+        public static function update_Admin_Password_Action() {
+            $error = "";
+            $message = "";
+            $success = false;
+            $admin = new Admin();
+
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                // check for empty fields : 
+                if(empty($_POST['id'])) { $error .= "Admin Id Required ! <br>"; }
+                if(empty($_POST['current_password'])) { $error .= "Current Password Required ! <br>"; }
+                if(empty($_POST['new_password'])) { $error .= "New Password Required ! <br>"; }
+                if(empty($_POST['confirm_password'])) { $error .= "You need to confirm your password ! <br>"; }
+
+                // valid the id 
+                $adminId = $_POST['id'];
+                if(!filter_var($adminId, FILTER_VALIDATE_INT)) {
+                    $error .= "Invalid Admin Id ! <br>";
+                }
+
+                // check if current pass matche the stored :
+                $adminData = $admin->admin_Data($adminId);
+                if(password_verify($_POST['current_password'] , $adminData['password'])) {
+                    // valid new and confirmed password
+                    if (strlen($_POST['new_password']) < 8 || strlen($_POST['new_password']) > 55) {
+                        $error .= "Password Must Be Between 8 And 55 Chars! <br>";
+                    }
+                    if (!preg_match('/[A-Za-z]/', $_POST['new_password'])) {
+                        $error .= "New Password Must Contain At Least One Letter! <br>";
+                    }
+                    if (!preg_match('/[0-9]/', $_POST['new_password'])) {
+                        $error .= "New Password Must Contain At Least One Number! <br>";
+                    }
+                    if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $_POST['new_password'])) {
+                        $error .= "New Password Must Contain At Least One Special Character! <br>";
+                    }
+                    // set passwords var 
+                    $newPassword = htmlspecialchars($_POST['new_password']);
+                    $confirmedPass = htmlspecialchars($_POST['confirm_password']);
+                    // check if new pass match the confirmed one 
+                    if($newPassword === $confirmedPass) {
+                        if(empty($error)) {
+                            try {
+                                $success = $admin->change_Password($newPassword, $adminId);
+                                if($success) {
+                                    $message .= "
+                                        Password Changed Successfully ✔
+                                        <script>
+                                            setTimeout(function() {
+                                                window.location.href = 'routes.php?action=adminProfile';
+                                            }, 1000);
+                                        </script>
+                                    ";
+                                } else {
+                                    $error .= "Failed To Change your Password ! <br>";
+                                }
+                            } catch (Exception $e) {
+                                $error .= "Something Went Wrong, Please Try Again ! <br>";
+                            }
+                        }
+                    } else {
+                        $error .= "Your confirmed Pass doesn't match the new Pass ! <br>";
+                    }
+                } else {
+                    $error .= "Your Current Password Isn't Correct ! Try Again <br>";
+                }
+            }
+            if(empty($adminData)) {
+                $error .= "Cannot Update Your Password ! <br>";
+            } 
+            require_once "views/admin/change_password.php";
         }
 
     }
