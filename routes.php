@@ -75,6 +75,18 @@
             case "destroyProduct" :
                 AdminController::destroy_Product_Action();
                 break;
+            case "editAdmInf" :
+                AdminController::admin_Edit_Profile_Action();
+                break;
+            case "updateAdmPro" :
+                AdminController::update_Admin_Profile_Action();
+                break;
+            case "ChangeAdmPsw" :
+                AdminController::change_Password_Action();
+                break;
+            case "updateAdmPss" :
+                AdminController::update_Admin_Password_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
