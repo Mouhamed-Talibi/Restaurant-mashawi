@@ -1,5 +1,9 @@
 <?php
-    session_start();
+
+    // Start the session only if it is not already started
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
     session_regenerate_id();
 
     // check for session

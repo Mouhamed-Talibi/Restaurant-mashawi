@@ -26,10 +26,10 @@
                     Pages
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="routes.php?action=adminProfile">My Profile</a></li>
                         <li><a class="dropdown-item" href="routes.php?action=adminProducts">Food</a></li>
-                        <li><a class="dropdown-item" href="routes.php?action=addCategory">Add Category</a></li>
+                        <li><a class="dropdown-item" href="routes.php?action=adminProfile">Your Profile</a></li>
                         <li><a class="dropdown-item" href="routes.php?action=addProduct">Add Product</a></li>
+                        <li><a class="dropdown-item" href="routes.php?action=addCategory">Add Category</a></li>
                     </ul>
                 </li>
             </ul>

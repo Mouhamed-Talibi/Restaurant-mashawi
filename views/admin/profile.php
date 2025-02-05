@@ -8,65 +8,66 @@
 ?>
 
 <!-- Start Profile -->
-<div class="profile my-5">
+<div class="profile py-5">
     <div class="container">
-        <!-- Section Heading -->
-        <div class="text-center mb-5">
-            <h2 class="fw-bold display-4" style="margin-top: 100px; border-bottom: 2px solid #d36d0e;">My Profile</h2>
-            <p class="text-muted mt-3">Manage and update your personal information</p>
-        </div>
-
-        <!-- User Info Cards -->
-        <div class="row gy-4">
-            <!-- First Name -->
-            <div class="col-12 col-md-6">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body p-4">
-                        <h6 class="text-uppercase text-dark fw-bold mb-3">First Name</h6>
-                        <p class="mb-0 fs-5 text-dark">Mouhamed</p>
-                    </div>
-                </div>
+        <!-- Profile Card -->
+        <div class="card mt-5 shadow-lg border-0 mx-auto" style="max-width: 800px; border-radius: 15px; overflow: hidden;">
+            <div class="card-header bg-secondary text-white text-center py-4">
+                <h2 class="fw-bold">Your Profile</h2>
+                <p class="mb-0 text-light">Manage and update your personal information</p>
             </div>
 
-            <!-- Last Name -->
-            <div class="col-12 col-md-6">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body p-4">
-                        <h6 class="text-uppercase text-dark fw-bold mb-3">Last Name</h6>
-                        <p class="mb-0 fs-5 text-dark">Talibi</p>
+            <div class="card-body p-4">
+                <div class="row gy-3">
+                    <!-- First Name -->
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <h6 class="text-muted text-uppercase">First Name</h6>
+                            <p class="fw-bold mb-0">
+                                <?= $adminData['first_name']?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <h6 class="text-muted text-uppercase">Last Name</h6>
+                            <p class="fw-bold mb-0">
+                                <?= $adminData['last_name']?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <h6 class="text-muted text-uppercase">Email</h6>
+                            <p class="fw-bold mb-0">
+                            <?= $adminData['email']?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <h6 class="text-muted text-uppercase">Password</h6>
+                            <p class="fw-bold mb-0">********</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Email -->
-            <div class="col-12 col-md-6">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body p-4">
-                        <h6 class="text-uppercase text-dark fw-bold mb-3">Email</h6>
-                        <p class="mb-0 fs-5 text-dark">mouhamed@gmail.com</p>
-                    </div>
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-center mt-4">
+                    <a href="routes.php?action=ChangeAdmPsw" class="btn btn-warning me-3" style="font-size: 14px; padding: 8px 16px;">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </a>
+                    <a href="routes.php?action=editAdmInf&admId=<?= $_SESSION['adminId']?>" class="btn btn-outline-dark" style="font-size: 14px; padding: 8px 16px;">
+                        <i class="fas fa-edit me-2"></i>Edit Info
+                    </a>
                 </div>
             </div>
-
-            <!-- Password -->
-            <div class="col-12 col-md-6">
-                <div class="card shadow-sm border-0 h-100">
-                    <div class="card-body p-4">
-                        <h6 class="text-uppercase text-dark fw-bold mb-3">Password</h6>
-                        <p class="mb-0 fs-5 text-dark">********</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Links for Editing -->
-        <div class="d-flex justify-content-center mt-5 gap-3">
-            <a href="routes.php?action=ChangeAdmPsw" class="btn btn-primary btn-lg px-4 py-2">
-                <i class="fas fa-key me-2"></i>Change Password
-            </a>
-            <a href="routes.php?action=editAdmInf" class="btn btn-outline-secondary btn-lg px-4 py-2">
-                <i class="fas fa-edit me-2"></i>Edit Information
-            </a>
         </div>
     </div>
 </div>
