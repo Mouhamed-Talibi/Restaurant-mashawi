@@ -1,2 +1,2 @@
 # Restaurant-mashawi
-Competed Restaurant Site
+Compeleted Restaurant Site
