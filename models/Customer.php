@@ -1,5 +1,6 @@
 <?php
     namespace models;
+    use Exception;
     use models\Database;
     use PDO;
 
@@ -12,7 +13,7 @@
             $this->connection = $database->connect();
             // check for connection
             if ($this->connection === null) {
-                throw new \Exception("DB Connection Failed!");
+                throw new Exception("DB Connection Failed!");
             }
             return $this->connection;
         }
@@ -26,7 +27,7 @@
                 $stmt = $this->connection->prepare("SELECT id FROM customers WHERE email = ?");
                 $stmt->execute([$email]); 
                 if ($stmt->rowCount() > 0) {
-                    throw new \Exception("Email Already In Use!");
+                    throw new Exception("Email Already In Use!");
                 }
 
                 // Hash the password
@@ -35,7 +36,7 @@
                 // Insert the new customer
                 $stmt = $this->connection->prepare("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
                 if (!$stmt->execute([$f_name, $l_name, $email, $hashed_pass])) {
-                    throw new \Exception("Sign Up Failed!");
+                    throw new Exception("Sign Up Failed!");
                 }
             }
         }
@@ -60,7 +61,7 @@
                             header('Location: routes.php?action=customerHome');
                             exit();
                         } else {
-                            throw new \Exception("Incorrect Password !");
+                            throw new Exception("Incorrect Password !");
                         }
                     } elseif ($customer['role'] === "admin") {
                         // verify password : 
@@ -72,17 +73,55 @@
                             header('Location: routes.php?action=adminDashboard');
                             exit();
                         } else {
-                            throw new \Exception("Incorrect Password !");
+                            throw new Exception("Incorrect Password !");
                         }
                     } else {
                         header('Location: routes.php?action=home');
                         exit();
                     }
                 } else {
-                    throw new \Exception("Incorrect Email !");
+                    throw new Exception("Incorrect Email !");
                 }
             } else {
-                throw new \Exception("Db Connection Failed !");
+                throw new Exception("Db Connection Failed !");
+            }
+        }
+
+        // food menu method
+        public function food_Menu() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM categories");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 1) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return []; 
+                    }
+                } catch (Exception $e) {
+                    error_log("Something went wrong in food Menu: " . $e->getMessage());
+                    return []; 
+                }
+            }
+        }
+
+        // explore Food method : 
+        public function explore_Food($categoryId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM products WHERE category_id = ?");
+                    $stmt->execute([$categoryId]);
+                    if($stmt->rowCount() > 1) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Soemthing went wrong in explore Food : ") . $e->getMessage();
+                    return [];
+                }
             }
         }
 
