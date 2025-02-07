@@ -1,5 +1,7 @@
 <?php
     namespace controllers;
+    use controllers\AdminController;
+    use Exception;
     use models\Customer;
     use models\Database;
 
@@ -59,7 +61,7 @@
                             header("Location: routes.php?action=login");
                             exit();
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $error .= $e->getMessage();
                     }
                 }
@@ -98,14 +100,24 @@
                             $login = new Customer;
                             $login->login($email, $password);
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $error .= $e->getMessage();
                     }
                 }
             }
             // require login page
             require_once "views/login.php";
-        }  
+        } 
+
+        // logout actiion 
+        public static function logout_Action() {
+            session_start(); 
+            session_unset();
+            session_destroy();
+            session_write_close();  
+            header("Location: routes.php?action=home");
+            exit();
+        }
 
         // customer home action
         public static function customer_Home_Action() {
@@ -117,14 +129,48 @@
             require_once "views/pageError.php";
         }
 
-        // logout actiion 
-        public static function logout_Action() {
-            session_start(); 
-            session_unset();
-            session_destroy();
-            session_write_close();  
-            header("Location: routes.php?action=home");
-            exit();
+        // about action : 
+        public static function about_Action() {
+            require_once "views/about.php";
+        }
+
+        // menu action :
+        public static function menu_Action() {
+            $error = "";
+            $foodMenu = [];
+            $customer = new Customer();
+
+            $foodMenu = $customer->food_Menu();
+            if(empty($foodMenu)) {
+                $error .= "Food Menu Not Available For The Moment ! <br>";
+            }
+            require_once "views/menu.php";
+        }
+
+        // explore Food Action :
+        public static function explore_Products_Action() {
+            $error = "";
+            $productsList = [];
+            $customer = new Customer();
+
+            // check catId 
+            if(isset($_GET['catId']) && filter_var($_GET['catId'], FILTER_VALIDATE_INT)) {
+                $categoryId = intval($_GET['catId']);
+                // get productsList
+                try {
+                    $productsList = $customer->explore_Food($categoryId);
+                    if(empty($productsList)) {
+                        $error .= "Food Will Be Available Soon :) <br>";
+                    }
+                    require_once "views/food.php";
+                } catch (Exception $e) {
+                    $error .= "No Availabel Products For The Moement ! <br>";
+                }
+            } else {
+                header("Location: routes?php?action=errorPage");
+                exit();
+            }
+            require_once "views/food.php";
         }
     }
 ?>
