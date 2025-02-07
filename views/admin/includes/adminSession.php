@@ -8,7 +8,7 @@
 
     // check for session
     if(!isset($_SESSION['adminId']) || !isset($_SESSION['adminEmail']) || !isset($_SESSION['adminRole'])) {
-        header('Location: routes.php?action=adminDashboard');
+        header('Location: routes.php?action=home');
         exit();
     } else {
         // check for role
