@@ -13,6 +13,41 @@
             require_once "views/admin/dashboard.php";
         }
 
+        // admin status action 
+        public static function admin_Status_Action() {
+            if(session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+        
+            if (!isset($_SESSION['adminId'], $_SESSION['adminEmail'], $_SESSION['adminRole'])) {
+                // If there is no admin session, redirect to home
+                header("Location: routes.php?action=home");
+                exit;
+            }
+        
+            $admin = new Admin();
+            $adminId = $_SESSION['adminId'];
+            $adminEmail = $_SESSION['adminEmail'];
+            $adminRole = $_SESSION['adminRole'];
+        
+            $adminData = $admin->admin_Data($adminId);
+            
+            // Redirect if ANY of the values don't match
+            if ($adminId !== $adminData['id'] || $adminEmail !== $adminData['email'] || $adminRole !== $adminData['role']) {
+                header("Location: routes.php?action=home");
+                exit;
+            }
+        
+            // If admin session is valid, redirect to adminDashboard
+            header("Location: routes.php?action=adminDashboard");
+            exit;
+        }  
+
+        // admin error page action 
+        public static function adm_Error_Page_Action(){
+            require_once "views/admin/pageError.php";
+        }
+
         // add-category action :
         public static function add_Category_Action() {
             $error = "";
