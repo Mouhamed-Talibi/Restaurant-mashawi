@@ -18,7 +18,7 @@
                     <div class="mt-3">
                         <h1 class="h3 text-dark mb-3">Page Not Found</h1>
                         <p class="text-secondary mb-4">Sorry, we cannot find the page you're looking for.</p>
-                        <a href="routes.php?action=home" class="btn btn-primary">Go Back Home</a>
+                        <a href="routes.php?action=adminDashboard" class="btn btn-primary">Go Back Home</a>
                     </div>
                 </div>
             </div>
