@@ -1,4 +1,5 @@
 <?php
+    session_start();
     use controllers\AdminController;
     use controllers\CustomersController;
     require_once "Autoloader.php";
@@ -36,6 +37,9 @@
             case "adminMessages" :
                 AdminController::admin_Messages_Action();
                 break;
+            case "errorPage" :
+                CustomersController::page_Error_Action();
+                break;
             case "addCategory" :
                 AdminController::add_Category_Action();
                 break;
@@ -63,6 +67,9 @@
             case "destroyCategory" :
                 AdminController::destroy_Category_Action();
                 break;
+            case "AdmErrorPage" :
+                AdminController::adm_Error_Page_Action();
+                break;
             case "editProduct" :
                 AdminController::edit_Product_Action();
                 break;
@@ -87,12 +94,37 @@
             case "updateAdmPss" :
                 AdminController::update_Admin_Password_Action();
                 break;
+            case "checkStatus" :
+                AdminController::admin_Status_Action();
+                break;
+            case "about" :
+                CustomersController::about_Action();
+                break;
+            case "menu" :
+                CustomersController::menu_Action();
+                break;
+            case "expFood":
+                if (isset($_GET['catId']) && is_numeric($_GET['catId'])) {
+                    CustomersController::explore_Products_Action();
+                } else {
+                    CustomersController::page_Error_Action();
+                }
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
-            default : 
-                CustomersController::page_Error_Action();
-                break;
+            default: 
+                if (isset($_SESSION['adminId']) && isset($_SESSION['adminEmail']) && isset($_SESSION['adminRole'])) {
+                    header("Location: routes.php?action=AdmErrorPage");
+                    exit;
+                } elseif (isset($_SESSION['customerId']) && isset($_SESSION['customerEmail']) && isset($_SESSION['customerRole'])) {
+                    header("Location: routes.php?action=errorPage");
+                    exit;
+                } else {
+                    header("Location: routes.php?action=home");
+                    exit;
+                }
+            
         }
     }
 ?>
