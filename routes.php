@@ -110,6 +110,18 @@
                     CustomersController::page_Error_Action();
                 }
                 break;
+            case "services" :
+                CustomersController::services_Action();
+                break;
+            case "location" :
+                CustomersController::location_Action();
+                break;
+            case "contact" :
+                CustomersController::contact_Action();
+                break;
+            case "sendMessage" :
+                CustomersController::send_Message_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
