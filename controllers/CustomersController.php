@@ -172,5 +172,72 @@
             }
             require_once "views/food.php";
         }
+
+        // services action : 
+        public static function services_Action() {
+            require_once "views/services.php";
+        }
+
+        // location action :
+        public static function location_Action() {
+            require_once "views/location-contact.php";
+        }
+
+        // contact action :
+        public static function contact_Action() {
+            require_once "views/location-contact.php";
+        }
+
+        // send message action : 
+        public static function send_Message_Action() {
+            $error = "";
+            $message = "";
+            $success = false;
+            $customer = new Customer();
+
+            // check request : 
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                // check empty fields : 
+                if(empty($_POST['full_name'])) { $error .= "Full Name Field Required ! <br>"; }
+                if(empty($_POST['email'])) { $error .= "Email Field Required ! <br>"; }
+                if(empty($_POST['message'])) { $error .= "Message Field Required ! <br>"; }
+
+                // validate & sanitize inputs : 
+                $fullName = htmlspecialchars(filter_input(INPUT_POST, "full_name", FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+                if (!preg_match('/^[\p{L}\s]+$/u', $fullName)) {
+                    $error .= "Full Name can only contain letters and spaces!<br>";
+                }                
+                $customerMessage = htmlspecialchars(filter_input(INPUT_POST, "message", FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+                if (!preg_match('/^[\p{L}0-9\s.,!?@#\(\)-]+$/u', $customerMessage)) {
+                    $error .= "Message can only contain letters, numbers, and common punctuation!<br>";
+                }                
+                $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $error .= "Invalid Email! <br>";
+                }
+
+                // if empty errors : 
+                if(empty($error)) {
+                    try {
+                        $success = $customer->sendMessage($fullName, $email, $customerMessage);
+                        if($success) {
+                            $message .= "
+                                Your Message Send Successfully ✔
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'routes.php?action=customerHome';
+                                    }, 1000);
+                                </script>
+                            ";
+                        } else {
+                            $error .= "Failed To Send Your Message , Please Try Again ! <br>";
+                        }
+                    } catch (Exception $e) {
+                        $error .= "Something went wrong, please try again ! <br>";
+                    }
+                }
+            }
+            require_once "views/location-contact.php";
+        }
     }
 ?>
