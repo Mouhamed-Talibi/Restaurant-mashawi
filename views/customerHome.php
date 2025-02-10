@@ -35,8 +35,21 @@
             </h2>
             <p class="text-center text-muted mb-5">Explore our delicious specials and find your next favorite dish!</p>
 
+            <!-- Quick Presentation -->
+            <div class="row bg-dark text-light px-3 py-5 mb-5">
+                <div class="col-md-6 d-flex align-items-center">
+                    <img src="views/images/relax.jpg" alt="Relaxing Ambience" class="img-fluid rounded-3 shadow-lg">
+                </div>
+                <div class="col-md-6 d-flex flex-column justify-content-center px-4">
+                    <h3 class="fw-bold text-uppercase mt-3">We Prioritize Your Comfort</h3>
+                    <p class="text-secondary">
+                        At <span class="text-warning">Mashawi-Amar</span>, we believe dining is more than just eating—it's an experience. Our cozy and inviting atmosphere is designed to help you relax and enjoy every bite. Whether you're here for a family dinner or a quiet evening, your comfort is our top priority.
+                    </p>
+                </div>
+            </div>
+
             <!-- Food Cards -->
-            <div class="row g-4">
+            <div class="row g-4 mt-5">
                 <!-- Card 1 -->
                 <div class="col-md-4">
                     <div class="card shadow-sm">
