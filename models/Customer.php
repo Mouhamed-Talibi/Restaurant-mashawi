@@ -87,23 +87,22 @@
             }
         }
 
-        // food menu method
+        // Food Menu Method
         public function food_Menu() {
             $isConnected = $this->db_connection();
-            if($isConnected) {
+            if ($isConnected) {
                 try {
                     $stmt = $isConnected->prepare("SELECT * FROM categories");
                     $stmt->execute();
-                    if($stmt->rowCount() > 1) {
-                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    } else {
-                        return []; 
-                    }
+                    
+                    // return results
+                    return $stmt->fetchAll(PDO::FETCH_ASSOC); 
                 } catch (Exception $e) {
                     error_log("Something went wrong in food Menu: " . $e->getMessage());
                     return []; 
                 }
             }
+            return []; 
         }
 
         // explore Food method : 
@@ -125,5 +124,37 @@
             }
         }
 
+        // send message method : 
+        public function sendMessage($fullName, $email, $message) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("INSERT INTO messages(messengerName, messengerEmail, message) VALUES(?, ?, ?)");
+                    return $stmt->execute([$fullName, $email, $message]);
+                } catch (Exception $e) {
+                    error_log("Error In Send Message: " . $e->getMessage());
+                    return false;
+                }
+            }
+        }
+
+        // customer data :
+        public function cutomerData($customerId, $customerEmail) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT id, first_name, last_name, email FROM customers WHERE id = ? AND email = ?");
+                    $stmt->execute([$customerId ,$customerEmail]);
+                    if($stmt->rowCount() > 1) {
+                        return $stmt->fetch(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Something Went Wrong : " . $e->getMessage());
+                    return [];
+                }
+            } 
+        }
 
     }
