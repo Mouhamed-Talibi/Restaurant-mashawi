@@ -1,3 +1,10 @@
+<?php
+    use models\Customer;
+    use controllers\CustomersController;
+    $customer = new Customer();
+    $categoriesList = $customer->categoriesList();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,9 +23,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- style link -->
     <link rel="stylesheet" href="views/style/main.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".auth-trigger").forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault(); // Stop the page from reloading
+
+                    var authModal = new bootstrap.Modal(document.getElementById("authModal"));
+                    authModal.show();
+                });
+            });
+        });
+    </script>
 </head>
 
-<body>
+<body class="mb-0">
     <!-- start nav -->
         <nav class="navbar navbar-expand-lg bg-dark fixed-top">
             <div class="container">
@@ -32,26 +51,25 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-light active" aria-current="page" href="">Home</a>
+                            <a class="nav-link text-light active" aria-current="page" href="routes.php?action=home">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light active" aria-current="page" href="#about">About</a>
+                            <a class="nav-link text-light active" href="#about">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="#menu">Menu</a>
+                            <a class="nav-link text-light active" href="#menu">Menu</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Pages
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Team</a></li>
                                 <li><a class="dropdown-item" href="#location-contact">Location</a></li>
                                 <li><a class="dropdown-item" href="#location-contact">Contact</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="#services">Services</a>
+                            <a class="nav-link text-light active" href="#services">Services</a>
                         </li>
                     </ul>
                     <!-- login / signup -->
@@ -103,7 +121,7 @@
                             <p class="text-muted fs-5">
                                 We started in <span class="fw-bold text-warning">2018</span> with a small restaurant in Ouled Teima, driven by a love for authentic grilled dishes and a passion for exceptional hospitality. Over the years, we've grown into a beloved destination for food lovers, offering a menu crafted with the freshest ingredients and bold flavors.
                             </p>
-                            <a href="about.html" class="btn btn-warning px-4 py-2 rounded-pill">Read More</a>
+                            <a href="about.html" class="btn btn-warning px-4 py-2 rounded-pill auth-trigger">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -115,7 +133,7 @@
                             <p class="text-muted fs-5">
                                 Our restaurant is a place where you can <span style="color: #d36d0e;">enjoy the best grilled dishes</span> in town, prepared with love and care. We believe in using the finest ingredients and traditional recipes to create a dining experience that's truly unforgettable. Whether you're here for a quick bite or a special occasion, we promise to make your visit memorable.
                             </p>
-                            <a href="about.html" class="btn btn-warning px-4 py-2 rounded-pill">Read More</a>
+                            <a href="about.html" class="btn btn-warning px-4 py-2 rounded-pill auth-trigger">Read More</a>
                         </div>
                     </div>
                     <!-- Image Section -->
@@ -214,86 +232,23 @@
         
                 <!-- Menu Categories -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-                    <!-- Salads -->
-                    <div class="col">
-                        <div class="menu-card p-4 bg-white shadow rounded h-100">
-                            <div class="image mb-3">
-                                <img src="views/images/salade.jpg" alt="Salads" class="img-fluid rounded">
+                    <?php if ($categoriesList) : ?>
+                        <?php foreach ($categoriesList as $category) : ?>
+                            <div class="col">
+                                <div class="menu-card p-4 bg-white shadow rounded h-100">
+                                    <div class="image mb-3">
+                                        <img src="<?= $category['category_image'] ?>" alt="<?= htmlspecialchars($category['category_name']) ?>" class="img-fluid rounded">
+                                    </div>
+                                    <div class="infos">
+                                        <h3 class="fw-bold"><?= htmlspecialchars($category['category_name']) ?></h3>
+                                        <p class="text-muted"><?= htmlspecialchars($category['category_description']) ?></p>
+                                        <a href="#" class="btn btn-warning rounded-3 auth-trigger">Explore <?= htmlspecialchars($category['category_name']) ?></a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="infos">
-                                <h3 class="fw-bold">Salads</h3>
-                                <p class="text-muted">Fresh, healthy salads made with the finest ingredients.</p>
-                                <a href="food.html" class="btn btn-warning rounded-3">Explore Salads</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Juices -->
-                    <div class="col">
-                        <div class="menu-card p-4 bg-white shadow rounded h-100">
-                            <div class="image mb-3">
-                                <img src="views/images/juices.jpg" alt="Juices" class="img-fluid rounded">
-                            </div>
-                            <div class="infos">
-                                <h3 class="fw-bold">Juices</h3>
-                                <p class="text-muted">Refreshing juices from fresh fruits to brighten your day.</p>
-                                <a href="food.html" class="btn btn-warning rounded-3">Explore Juices</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Burgers -->
-                    <div class="col">
-                        <div class="menu-card p-4 bg-white shadow rounded h-100">
-                            <div class="image mb-3">
-                                <img src="views/images/burgers.jpg" alt="Burgers" class="img-fluid rounded">
-                            </div>
-                            <div class="infos">
-                                <h3 class="fw-bold">Burgers</h3>
-                                <p class="text-muted">Juicy and flavorful burgers for every craving.</p>
-                                <a href="food.html" class="btn btn-warning rounded-3">Explore Burgers</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Sandwiches -->
-                    <div class="col">
-                        <div class="menu-card p-4 bg-white shadow rounded h-100">
-                            <div class="image mb-3">
-                                <img src="views/images/sandwiche.jpg" alt="Sandwiches" class="img-fluid rounded">
-                            </div>
-                            <div class="infos">
-                                <h3 class="fw-bold">Sandwiches</h3>
-                                <p class="text-muted">Tasty sandwiches perfect for a quick bite.</p>
-                                <a href="food.html" class="btn btn-warning rounded-3">Explore Sandwiches</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Pizza -->
-                    <div class="col">
-                        <div class="menu-card p-4 bg-white shadow rounded h-100">
-                            <div class="image mb-3">
-                                <img src="views/images/pizza.jpg" alt="Pizza" class="img-fluid rounded">
-                            </div>
-                            <div class="infos">
-                                <h3 class="fw-bold">Pizza</h3>
-                                <p class="text-muted">Delicious pizzas with the best toppings you’ll love.</p>
-                                <a href="food.html" class="btn btn-warning rounded-3">Explore Pizza</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Pasta -->
-                    <div class="col">
-                        <div class="menu-card p-4 bg-white shadow rounded h-100">
-                            <div class="image mb-3">
-                                <img src="views/images/pasta.jpg" alt="Pasta" class="img-fluid rounded">
-                            </div>
-                            <div class="infos">
-                                <h3 class="fw-bold">Pasta</h3>
-                                <p class="text-muted">Tasty pasta dishes to satisfy every craving.</p>
-                                <a href="food.html" class="btn btn-warning rounded-3">Explore Pasta</a>
-                            </div>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
-            </div>
         </div>
     <!-- end menu -->
 
@@ -306,7 +261,7 @@
                     <p class="text-dark">Visit us or get in touch anytime</p>
                 </div>
 
-                <div class="row">
+                <div class="row" id="location">
                     <!-- Location Section -->
                     <div class="col-lg-6 mb-4">
                         <div class="location bg-dark text-light shadow rounded p-4">
@@ -326,7 +281,7 @@
                     </div>
 
                     <!-- Contact Section -->
-                    <div class="col-lg-6">
+                    <div class="col-lg-6" id="contact">
                         <div class="contact bg-dark text-light shadow rounded p-4">
                             <h2 class="fw-bold mb-3 text-center">Get in Touch</h2>
                             <form>
@@ -348,7 +303,7 @@
                                 </div>
                                 <!-- Submit Button -->
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-warning w-100 fw-bold">Send Message</button>
+                                    <a href="#authModal" class="btn btn-warning w-50 mx-auto auth-trigger">Send message</a>
                                 </div>
                             </form>
                         </div>
@@ -357,6 +312,27 @@
             </div>
         </section>
     <!-- end location & contact -->
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authModalLabel">Create an Account to Continue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">
+                        You need to login or create an account to access this feature.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="routes.php?action=login" class="btn btn-primary">Login</a>
+                        <a href="routes.php?action=signup" class="btn btn-warning">Create Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- start footer -->   
         <footer class="footer mt-5 bg-dark text-light py-5">
@@ -399,7 +375,7 @@
                 <hr class="text-light-50">
                 <!-- Footer Bottom -->
                 <div class="text-center">
-                    <p class="mb-0">© 2025 <span>Mashawi-Amar</span>. All Rights Reserved.</p>
+                    <p class="mb-5">© 2025 <span>Mashawi-Amar</span>. All Rights Reserved.</p>
                 </div>
             </div>
         </footer>
