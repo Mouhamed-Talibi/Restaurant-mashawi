@@ -32,13 +32,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-light active" aria-current="page" href="index.html">Home</a>
+                            <a class="nav-link text-light active" aria-current="page" href="routes.php?action=home">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light active" aria-current="page" href="about.html">About</a>
+                            <a class="nav-link text-light active" aria-current="page" href="routes.php?action=checkUser">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="menu.html">Menu</a>
+                            <a class="nav-link text-light" href="routes.php?action=checkUser">Menu</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,12 +90,12 @@
                                 <!-- Email Input -->
                                 <div class="mb-3">
                                     <label for="email" class="form-label fw-semibold">Email Address</label>
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email">
                                 </div>
                                 <!-- Password Input -->
                                 <div class="mb-3">
                                     <label for="password" class="form-label fw-semibold">Password</label>
-                                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
                                 </div>
                                 <!-- Remember Me and Forgot Password -->
                                 <div class="d-flex justify-content-between align-items-center mb-4">
