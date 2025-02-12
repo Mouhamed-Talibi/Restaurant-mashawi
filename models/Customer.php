@@ -139,22 +139,44 @@
         }
 
         // customer data :
-        public function cutomerData($customerId, $customerEmail) {
+        public function customerData($customerId, $customerEmail) {
+            $isConnected = $this->db_connection();
+            if ($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT id, first_name, last_name, email FROM customers WHERE id = ? AND email = ?");
+                    $stmt->execute([$customerId, $customerEmail]); 
+                    
+                    if ($stmt->rowCount() > 0) {
+                        return $stmt->fetch(PDO::FETCH_ASSOC);
+                    } else {
+                        return false;
+                    }
+                } catch (Exception $e) {
+                    error_log("Something Went Wrong: " . $e->getMessage());
+                    return false;
+                }
+            }
+            return false; 
+        } 
+
+        // categories list Method 
+        public function categoriesList() {
             $isConnected = $this->db_connection();
             if($isConnected) {
                 try {
-                    $stmt = $isConnected->prepare("SELECT id, first_name, last_name, email FROM customers WHERE id = ? AND email = ?");
-                    $stmt->execute([$customerId ,$customerEmail]);
-                    if($stmt->rowCount() > 1) {
-                        return $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt = $isConnected->prepare("SELECT * FROM categories");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0 ) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
                     } else {
                         return [];
                     }
                 } catch (Exception $e) {
-                    error_log("Something Went Wrong : " . $e->getMessage());
-                    return [];
+                    error_log("Error in Categories Menu : ") . $e->getMessage();
                 }
-            } 
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
         }
 
     }
