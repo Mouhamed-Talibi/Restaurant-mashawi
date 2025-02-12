@@ -314,3 +314,12 @@
         color: black;
     }
 /* end customer-home */
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+footer {
+    margin-bottom: 0 !important;
+}

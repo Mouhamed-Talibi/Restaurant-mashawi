@@ -68,19 +68,19 @@
             <div class="container">
                 <div class="row justify-content-center">
 
-                    <!-- display errors -->
-                    <?php
-                        if(!empty($error)) {
-                            ?>
-                                <div class="alert alert-danger" role="alert">
-                                    <?php echo $error; ?>
-                                </div>
-                            <?php
-                        }
-                    ?>
-
                     <div class="col-md-6 col-lg-7">
                         <div class="card bg-dark text-light border-0 p-4">
+                            <!-- display errors -->
+                            <?php
+                                if(!empty($error)) {
+                                    ?>
+                                        <div class="alert alert-danger" role="alert">
+                                            <?php echo $error; ?>
+                                        </div>
+                                    <?php
+                                }
+                            ?>
+
                             <!-- Card Header -->
                             <div class="text-center mb-4">
                                 <h3 class="fw-bold fs-2">Sign Up</h3>
@@ -100,20 +100,12 @@
                                 <!-- Email Input -->
                                 <div class="mb-3">
                                     <label for="email" class="form-label fw-semibold">Email Address</label>
-                                    <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email">
                                 </div>
                                 <!-- Password Input -->
                                 <div class="mb-3">
                                     <label for="password" class="form-label fw-semibold">Password</label>
                                     <input type="password" name="password" class="form-control" id="password" placeholder="Enter a strong password">
-                                </div>
-                                <!-- Remember Me and Forgot Password -->
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="rememberMe">
-                                        <label class="form-check-label" for="rememberMe">Remember Me</label>
-                                    </div>
-                                    <a href="#" class="text-decoration-none text-warning small">Forgot Password?</a>
                                 </div>
                                 <!-- Submit Button -->
                                 <button type="submit" class="btn text-light w-100 fw-bold" style="background-color: #d36d0e;">Sign Up</button>
