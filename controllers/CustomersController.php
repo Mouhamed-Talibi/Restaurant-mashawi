@@ -13,7 +13,6 @@
 
         // sign up action 
         public static function signUp_Action() {
-            // set an empty error var
             $error = "";
         
             // handle request:
@@ -109,7 +108,7 @@
             require_once "views/login.php";
         } 
 
-        // logout actiion 
+        // logout action 
         public static function logout_Action() {
             session_start(); 
             session_unset();
@@ -121,8 +120,26 @@
 
         // customer home action
         public static function customer_Home_Action() {
-            require_once "views/customerHome.php";
-        }
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $error = "";
+            $customer = new Customer();
+            $customerData = false;
+        
+            // Validate session data properly
+            $customerId = isset($_SESSION['customerId']) ? filter_var($_SESSION['customerId'], FILTER_VALIDATE_INT) : false;
+            $customerEmail = isset($_SESSION['customerEmail']) ? filter_var($_SESSION['customerEmail'], FILTER_VALIDATE_EMAIL) : false;
+            if ($customerId && $customerEmail) {
+                $customerData = $customer->customerData($customerId, $customerEmail);
+            }
+
+            if (!$customerData || $customerData['id'] !== $customerId || $customerData['email'] !== $customerEmail) {
+                header('Location: routes.php?action=home');
+                exit();
+            }
+            require_once "views/customerHome.php"; 
+        }        
 
         // page error action
         public static function page_Error_Action( ) {
@@ -239,5 +256,19 @@
             }
             require_once "views/location-contact.php";
         }
+
+        // categories list Action :
+        public static function categories_List_Action() {
+            $error = "";
+            $customer = new Customer();
+
+            $categoriesList = [];
+            $categoriesList = $customer->categoriesList();
+            if(empty($categoriesList)) {
+                $error .= "Menu Wil Be Available Soon. Thank You For Understanding.";
+            }
+            require_once "index.php";
+        }
+
     }
 ?>
