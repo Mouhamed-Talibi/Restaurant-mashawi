@@ -196,7 +196,7 @@
             $isConnected = $this->db_connection();
             if($isConnected) {
                 try {
-                    $stmt = $isConnected->prepare("SELECT id, category_name FROM categories");
+                    $stmt = $isConnected->prepare("SELECT id, category_name, category_name, category_description, category_image FROM categories");
                     $stmt->execute();
                     if($stmt->rowCount() > 0 ) {
                         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -354,6 +354,24 @@
             }
         }
 
-
+        // products list method :
+        public function productsList() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM products");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0 ) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        throw new Exception("No Aailable Food For The Moment. Thank You For Understanding.");
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in Food List : ") . $e->getMessage();
+                }
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
+        }
     }
 ?>
