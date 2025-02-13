@@ -270,5 +270,18 @@
             require_once "index.php";
         }
 
+        // random products action
+        public static function random_Products_Action() {
+            $error = "";
+            $customer = new Customer();
+            $randomProducts = [];
+
+            $randomProducts = $customer->randomProducts();
+            if(empty($randomProducts)) {
+                $error .= "No Available Products Fod The Moment. Thank You!";
+            }
+            return $randomProducts;
+        }
+
     }
 ?>
