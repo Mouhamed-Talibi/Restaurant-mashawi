@@ -223,6 +223,14 @@
 
         // admin products action :
         public static function admin_products() {
+            $error = "";
+            $admin = new Admin();
+            $productsList = [];
+
+            $productsList = $admin->productsList();
+            if(empty($productsList)) {
+                $error .= "Food Will Be Available Soon. Thank You For Understanding.";
+            }
             require_once "views/admin/products.php";
         }
 
@@ -253,7 +261,15 @@
         }
 
         // admin menu action :
-        public static function admin_Menu_Action() {
+        public static function admin_Menu_Action() { 
+            $error = "";
+            $admin = new Admin();
+            $categoriesList = [];
+
+            $categoriesList = $admin->categories_List();
+            if(empty($categoriesList)) {
+                $error .= "Menu will Be Availabe Soon. Thank You For Undertanding.";
+            }
             require_once "views/admin/menu.php";
         }
 
