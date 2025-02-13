@@ -43,29 +43,19 @@
                         <!-- Product Card -->
                         <div class="card shadow">
                             <div class="card-body text-center">
-                                <!-- Product Image -->
                                 <img src="<?= htmlspecialchars($productData['product_image']) ?>" alt="Product Image" class="img-fluid rounded mb-3" style="max-height: 200px; object-fit: cover;">
-
-                                <!-- Product Name -->
                                 <h3 class="card-title fw-bold mb-2"><?= htmlspecialchars($productData['product_name']) ?></h3>
-
-                                <!-- Product Description -->
                                 <p class="card-text text-secondary"><?= htmlspecialchars($productData['product_description']) ?></p>
-
                                 <!-- Buttons -->
                                 <div class="d-flex justify-content-center gap-2">
-                                    <!-- Delete Button (Triggers Modal) -->
                                     <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal">
                                         Delete
                                     </button>
-
-                                    <!-- Cancel Button -->
                                     <a href="routes.php?action=adminProducts" class="btn btn-secondary">Cancel</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 <?php
                     endif;
                 ?>
