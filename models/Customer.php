@@ -179,4 +179,26 @@
             }
         }
 
+        // random products method :
+        public function randomProducts() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM products ORDER BY RAND() LIMIT 10");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchALL(PDO::FETCH_ASSOC);
+                    } 
+                    else {
+                        return [];
+                    }
+                }
+                catch (Exception $e) {
+                    error_log("Error In Random Products : ") . $e->getMessage();
+                }
+            } else {
+                throw new Exception("Db connectin failed");
+            }
+        }
+
     }
