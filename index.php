@@ -1,6 +1,5 @@
 <?php
     use models\Customer;
-    use controllers\CustomersController;
     $customer = new Customer();
     $categoriesList = $customer->categoriesList();
 ?>
@@ -23,21 +22,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- style link -->
     <link rel="stylesheet" href="views/style/main.css">
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".auth-trigger").forEach(link => {
-                link.addEventListener("click", function (e) {
-                    e.preventDefault(); // Stop the page from reloading
-
-                    var authModal = new bootstrap.Modal(document.getElementById("authModal"));
-                    authModal.show();
-                });
-            });
-        });
-    </script>
 </head>
 
-<body class="mb-0">
+<body>
     <!-- start nav -->
         <nav class="navbar navbar-expand-lg bg-dark fixed-top">
             <div class="container">
@@ -54,10 +41,10 @@
                             <a class="nav-link text-light active" aria-current="page" href="routes.php?action=home">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light active" href="#about">About</a>
+                            <a class="nav-link text-light active" aria-current="page" href="#about">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light active" href="#menu">Menu</a>
+                            <a class="nav-link text-light" href="#menu">Menu</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -69,7 +56,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light active" href="#services">Services</a>
+                            <a class="nav-link text-light" href="#services">Services</a>
                         </li>
                     </ul>
                     <!-- login / signup -->
@@ -121,7 +108,9 @@
                             <p class="text-muted fs-5">
                                 We started in <span class="fw-bold text-warning">2018</span> with a small restaurant in Ouled Teima, driven by a love for authentic grilled dishes and a passion for exceptional hospitality. Over the years, we've grown into a beloved destination for food lovers, offering a menu crafted with the freshest ingredients and bold flavors.
                             </p>
-                            <a href="about.html" class="btn btn-warning px-4 py-2 rounded-pill auth-trigger">Read More</a>
+                            <button type="button" class="btn btn-warning rounded-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Read More
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -133,7 +122,9 @@
                             <p class="text-muted fs-5">
                                 Our restaurant is a place where you can <span style="color: #d36d0e;">enjoy the best grilled dishes</span> in town, prepared with love and care. We believe in using the finest ingredients and traditional recipes to create a dining experience that's truly unforgettable. Whether you're here for a quick bite or a special occasion, we promise to make your visit memorable.
                             </p>
-                            <a href="about.html" class="btn btn-warning px-4 py-2 rounded-pill auth-trigger">Read More</a>
+                            <button type="button" class="btn btn-warning rounded-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Read More
+                            </button>
                         </div>
                     </div>
                     <!-- Image Section -->
@@ -232,23 +223,33 @@
         
                 <!-- Menu Categories -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-                    <?php if ($categoriesList) : ?>
-                        <?php foreach ($categoriesList as $category) : ?>
+                    <?php if (empty($categoriesList)) : ?>
+                        <div class="col-12">
+                            <div class="alert alert-danger text-center w-100" role="alert">
+                                Menu will be available soon. Thank you for your understanding.
+                            </div>
+                        </div>
+                    <?php else : 
+                        $limitedCategories = array_slice($categoriesList, 0, 6);
+                        foreach ($limitedCategories as $category) :
+                    ?>
                             <div class="col">
                                 <div class="menu-card p-4 bg-white shadow rounded h-100">
-                                    <div class="image mb-3">
-                                        <img src="<?= $category['category_image'] ?>" alt="<?= htmlspecialchars($category['category_name']) ?>" class="img-fluid rounded">
+                                    <div class="image mb-3 text-center">
+                                        <img src="<?= $category['category_image'] ?>" alt="<?= $category['category_name'] ?>" class="img-fluid rounded" style="width: 200px; height: 120px; object-fit: cover;">
                                     </div>
-                                    <div class="infos">
-                                        <h3 class="fw-bold"><?= htmlspecialchars($category['category_name']) ?></h3>
-                                        <p class="text-muted"><?= htmlspecialchars($category['category_description']) ?></p>
-                                        <a href="#" class="btn btn-warning rounded-3 auth-trigger">Explore <?= htmlspecialchars($category['category_name']) ?></a>
+                                    <div class="infos text-center">
+                                        <h3 class="fw-bold"><?= $category['category_name'] ?></h3>
+                                        <p class="text-muted"><?= $category['category_description'] ?></p>
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            Explore <span class="text-muted fw-bold"><?= $category['category_name'] ?></span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php endforeach; endif; ?>
                 </div>
+            </div>
         </div>
     <!-- end menu -->
 
@@ -261,12 +262,12 @@
                     <p class="text-dark">Visit us or get in touch anytime</p>
                 </div>
 
-                <div class="row" id="location">
+                <div class="row">
                     <!-- Location Section -->
                     <div class="col-lg-6 mb-4">
                         <div class="location bg-dark text-light shadow rounded p-4">
                             <h2 class="location fw-bold mb-3 text-center">Our Location</h2>
-                            <div class="map mb-3">
+                            <div class="map mb-2">
                                 <!-- Embedded Google Map -->
                                 <iframe
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d338.1900739!2d-9.2170188!3d30.3903563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdb3d70a741536ef%3A0xa29b2c9944f7f8da!2sBrothers%20Grill!5e0!3m2!1sen!2sus!4v1697738456945!5m2!1sen!2sus"
@@ -281,10 +282,9 @@
                     </div>
 
                     <!-- Contact Section -->
-                    <div class="col-lg-6" id="contact">
+                    <div class="col-lg-6">
                         <div class="contact bg-dark text-light shadow rounded p-4">
                             <h2 class="fw-bold mb-3 text-center">Get in Touch</h2>
-                            <form>
                                 <!-- Name Input -->
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Full Name</label>
@@ -303,9 +303,10 @@
                                 </div>
                                 <!-- Submit Button -->
                                 <div class="text-center">
-                                    <a href="#authModal" class="btn btn-warning w-50 mx-auto auth-trigger">Send message</a>
+                                    <button type="button" class="btn btn-warning w-50" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        Send Message
+                                    </button>
                                 </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -313,26 +314,25 @@
         </section>
     <!-- end location & contact -->
 
-    <!-- Bootstrap Modal -->
-    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="authModalLabel">Create an Account to Continue</h5>
+                <div class="modal-header bg-warning text-dark">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>Feature Not Accessible</strong></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p class="text-center">
-                        You need to login or create an account to access this feature.
-                    </p>
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="routes.php?action=login" class="btn btn-primary">Login</a>
-                        <a href="routes.php?action=signup" class="btn btn-warning">Create Account</a>
-                    </div>
+                <div class="modal-body p-5">
+                    <p>Please <strong style="color: #d36d0e;">Login</strong> Or <strong style="color: #d36d0e;">Create Account</strong> To Access This Feature.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="routes.php?action=login" class="btn btn-warning">Login</a>
+                    <a href="routes.php?action=signup" class="btn btn-dark text-light">Create Account</a>
                 </div>
             </div>
+            </div>
         </div>
-    </div>
+    <!-- end modal -->
 
     <!-- start footer -->   
         <footer class="footer mt-5 bg-dark text-light py-5">
@@ -364,10 +364,10 @@
                         <p><i class="fas fa-phone-alt me-2"></i> +212 655342517</p>
                         <p><i class="fas fa-envelope me-2"></i> mashawiamar@example.com</p>
                         <div class="social-icons mt-3">
-                            <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                            <a href="" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.instagram.com/easy.code_/" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.linkedin.com/in/mohamed-talibi-639902333/" class="text-light"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
@@ -375,7 +375,7 @@
                 <hr class="text-light-50">
                 <!-- Footer Bottom -->
                 <div class="text-center">
-                    <p class="mb-5">© 2025 <span>Mashawi-Amar</span>. All Rights Reserved.</p>
+                    <p class="mb-0">© 2025 <span>Mashawi-Amar</span>. All Rights Reserved.</p>
                 </div>
             </div>
         </footer>
