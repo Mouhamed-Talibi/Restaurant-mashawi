@@ -271,16 +271,30 @@
         }
 
         // random products action
-        public static function random_Products_Action() {
+        public static function random_Categories_Action() {
             $error = "";
             $customer = new Customer();
             $randomProducts = [];
 
-            $randomProducts = $customer->randomProducts();
+            $randomProducts = $customer->randomCategories();
             if(empty($randomProducts)) {
                 $error .= "No Available Products Fod The Moment. Thank You!";
             }
             return $randomProducts;
+        }
+
+        // products list action 
+        public static function products_List_Action() {
+            $error = "";
+            $customer = new Customer();
+            $productsList = [];
+
+            $productsList = $customer->productsList();
+            if(empty($productsList)) {
+                $error .= "For The Moment There Is No Available Food. Thank For Understanding.";
+            }
+            // return products list
+            return $productsList;
         }
 
     }
