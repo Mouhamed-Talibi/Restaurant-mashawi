@@ -180,11 +180,11 @@
         }
 
         // random products method :
-        public function randomProducts() {
+        public function randomCategories() {
             $isConnected = $this->db_connection();
             if($isConnected) {
                 try {
-                    $stmt = $isConnected->prepare("SELECT * FROM products ORDER BY RAND() LIMIT 10");
+                    $stmt = $isConnected->prepare("SELECT * FROM categories ORDER BY RAND() LIMIT 10");
                     $stmt->execute();
                     if($stmt->rowCount() > 0) {
                         return $stmt->fetchALL(PDO::FETCH_ASSOC);
@@ -198,6 +198,26 @@
                 }
             } else {
                 throw new Exception("Db connectin failed");
+            }
+        }
+
+        // products list method : 
+        public function productsList() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM products ORDER BY created_at");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in Products List : ") . $e->getMessage();
+                }
+            } else {
+                throw new Exception("Db Connection Failed");
             }
         }
 
