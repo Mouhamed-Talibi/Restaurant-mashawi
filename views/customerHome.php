@@ -210,11 +210,11 @@
                     <div class="row align-items-center g-4">
                         <!-- Help Video -->
                         <div class="col-12 col-md-6 text-center">
-                            <video src="views/images/help.mp4" class="img-fluid rounded-4 shadow-lg" autoplay loop muted style="max-width: 100%; height: auto;"></video>
+                            <video src="views/images/help.mp4" class="img-fluid rounded-4" autoplay loop muted style="max-width: 100%; height: auto;"></video>
                         </div>
                         <!-- Help Text -->
                         <div class="col-12 col-md-6">
-                            <h1 class="fw-bold text-dark display-4 mb-4">
+                            <h1 class="fw-bold text-dark display-6 mb-4">
                                 You <span class="bg-dark text-warning px-3 py-1 rounded-pill">Need Help</span>?
                             </h1>
                             <div class="mt-3">
