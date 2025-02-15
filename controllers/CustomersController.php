@@ -297,5 +297,55 @@
             return $productsList;
         }
 
+        // find food action : 
+        public static function find_Food_Action() {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+        
+            $error = "";
+            $customer = new Customer();
+            $food = [];
+        
+            if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                $food_name = trim($_POST['food-name'] ?? '');
+                // Check if empty
+                if (empty($food_name)) {
+                    $error .= "You Must Enter The Name Of Your Favourite Dish!<br>";
+                }
+                elseif (!preg_match('/^[\p{L}\s]+$/u', $food_name)) {
+                    $error .= "Food Name can only contain letters and spaces!<br>";
+                } 
+                else {
+                    $food_name = htmlspecialchars($food_name);
+                    $food = $customer->findFood($food_name);
+                    if (empty($food)) {
+                        $error .= "There Is No Available Food For The Moment. Thank You!";
+                    } else {
+                        // Store in session and redirect
+                        $_SESSION['favFood'] = $food;
+                        header("Location: routes.php?action=favFood");
+                        exit();
+                    }
+                }
+            }
+            require_once "views/menu.php";
+        }
+
+        // fav Food action :
+        public static function fav_Food_Action() {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            if (!isset($_SESSION['favFood']) || empty($_SESSION['favFood'])) {
+                header('Location: routes.php?action=menu');
+                exit();
+            }
+        
+            $food = $_SESSION['favFood'];
+            unset($_SESSION['favFood']);
+            require_once "views/find-food.php";
+        }        
+
     }
 ?>
