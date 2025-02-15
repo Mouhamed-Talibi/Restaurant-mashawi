@@ -314,17 +314,3 @@
         color: black;
     }
 /* end customer-home */
-
-    .hover-zoom {
-        transition: transform 0.3s ease;
-    }
-    .hover-zoom:hover {
-        transform: scale(1.1);
-    }
-    .transition-all {
-        transition: all 0.3s ease;
-    }
-    .food-item:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 20px rgba(255, 193, 7, 0.2);
-    }
