@@ -122,6 +122,12 @@
             case "sendMessage" :
                 CustomersController::send_Message_Action();
                 break;
+            case "findFood" :
+                CustomersController::find_Food_Action();
+                break;
+            case "favFood" :
+                CustomersController::fav_Food_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
