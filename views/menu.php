@@ -3,8 +3,59 @@
     require_once "includes/nav.php";
 
     $title = "Mashawi-amar | Menu";
+    $foodMenu = $foodMenu ?? [];
     ob_start();
 ?>
+
+    <!-- Start Find Food Section -->
+    <div class="find-food bg-dark py-5 mt-5">
+        <div class="container">
+            <!-- Section Heading -->
+            <h1 class="text-center mb-5 fw-bold display-4 text-light">
+                Find <span class="bg-warning text-dark px-3 py-1 rounded-pill">Your Dish!</span>
+            </h1>
+
+            <!-- diplay error -->
+            <?php
+                if(!empty($error)) {
+                    ?>
+                        <div class="alert alert-danger text-center" role="alert">
+                            <?= $error ?>
+                        </div>
+                    <?php
+                }
+            ?>
+
+            <!-- Search Form and Image -->
+            <div class="row align-items-center g-4">
+                <!-- Search Form -->
+                <div class="col-12 col-md-6 order-2 order-md-1">
+                    <div class="find-text text-center text-md-start">
+                        <form action="routes.php?action=findFood" method="POST" class="d-flex flex-column gap-3">
+                            <input type="text" 
+                                name="food-name" 
+                                class="form-control form-control-lg rounded-pill border-0 shadow-sm" 
+                                placeholder="Write Your Favourite Dish Name" >
+                            <button type="submit" class="btn btn-warning btn-lg rounded-pill fw-bold text-dark">
+                                Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Image -->
+                <div class="col-12 col-md-6 order-1 order-md-2">
+                    <div class="find-image text-center">
+                        <img src="views/images/find-food.png" 
+                            alt="Find Food Illustration" 
+                            class="img-fluid rounded-4 food-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Find Food Section -->
+
 
     <!-- start menu -->
         <div class="menu mt-5 mb-5 py-5 bg-light" id="menu">
