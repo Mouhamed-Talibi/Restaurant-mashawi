@@ -221,4 +221,25 @@
             }
         }
 
+        public function findFood($foodName) {
+            $isConnected = $this->db_connection();
+            if ($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM products WHERE product_name LIKE :foodName");
+                    $stmt->execute(['foodName' => "%$foodName%"]);
+                    // Fetch Results Securely
+                    if ($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in Find Food: " . $e->getMessage());
+                    return [];
+                }
+            } else {
+                throw new Exception("Database Connection Failed!");
+            }
+        }        
+
     }
