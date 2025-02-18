@@ -39,7 +39,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="text-success fw-bold"><?= htmlspecialchars($product['product_price'])?> Mad</span>
-                                            <a href="#" class="text-decoration-none text-dark bg-warning p-2 rounded-2">
+                                            <a href="routes.php?action=orderFood&proId=<?= htmlspecialchars($product['id'])?>" class="text-decoration-none text-dark bg-warning p-2 rounded-2">
                                                 <i class="fa-solid fa-cart-shopping"></i>
                                                 Add to Cart
                                             </a>
