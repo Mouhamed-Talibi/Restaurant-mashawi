@@ -240,6 +240,46 @@
             } else {
                 throw new Exception("Database Connection Failed!");
             }
-        }        
+        }   
+        
+        // get product by id method :
+        public function product_Data($productId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM products WHERE id=?");
+                    $stmt->execute([$productId]);
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in Product Data :" . $e->getMessage());
+                }
+            } else {
+                throw new Exception("Db connection failed");
+            }
+        }
+
+        // confirm order method : 
+        public function confirmOrder($productId, $customerId, $fullName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice) {
+            $isConntected = $this->db_connection();
+            if($isConntected) {
+                try {
+                    $stmt = $isConntected->prepare("
+                        INSERT INTO 
+                            orders(product_id, customer_id, full_name, phone, delivery_adress, delivery_date, quantity, total_price)
+                        VALUES
+                            (? , ? , ? , ? , ? , ? , ? , ?);
+                    ");
+                    return $stmt->execute([$productId, $customerId, $fullName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice]);
+                } catch (Exception $e) {
+                    error_log("Error in Confirm Order : ") . $e->getMessage();
+                }
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
+        }
 
     }
