@@ -162,7 +162,7 @@
                                             <?= htmlspecialchars($product['product_price']) ?> MAD
                                         </p>
                                         <div class="d-flex justify-content-end mt-auto">
-                                            <a href="#" class="btn btn-warning btn-sm text-dark fw-bold">Add To Cart</a>
+                                            <a href="routes.php?action=orderFood&proId=<?= htmlspecialchars($product['id']) ?>" class="btn btn-warning btn-sm text-dark fw-bold">Add To Cart</a>
                                         </div>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@
                                                 <?= htmlspecialchars($product['product_price']) ?> MAD
                                             </p>
                                             <div class="d-flex justify-content-end mt-auto">
-                                                <a href="#" class="btn btn-warning btn-sm text-dark fw-bold">Add To Cart</a>
+                                                <a href="routes.php?action=orderFood&proId=<?= htmlspecialchars($product['id']) ?>" class="btn btn-warning btn-sm text-dark fw-bold">Add To Cart</a>
                                             </div>
                                         </div>
                                     </div>
@@ -253,7 +253,6 @@
                 </div>
             </div>
             <!-- End Help Section -->
-
         <?php endif; ?>
     </div>
     <!-- end customer home -->
