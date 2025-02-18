@@ -303,7 +303,7 @@
                 session_start();
             }
         
-            $error = "";
+            $errorFood = "";
             $customer = new Customer();
             $food = [];
         
@@ -311,16 +311,16 @@
                 $food_name = trim($_POST['food-name'] ?? '');
                 // Check if empty
                 if (empty($food_name)) {
-                    $error .= "You Must Enter The Name Of Your Favourite Dish!<br>";
+                    $errorFood .= "You Must Enter The Name Of Your Favourite Dish!<br>";
                 }
                 elseif (!preg_match('/^[\p{L}\s]+$/u', $food_name)) {
-                    $error .= "Food Name can only contain letters and spaces!<br>";
+                    $errorFood .= "Food Name can only contain letters and spaces!<br>";
                 } 
                 else {
                     $food_name = htmlspecialchars($food_name);
                     $food = $customer->findFood($food_name);
                     if (empty($food)) {
-                        $error .= "There Is No Available Food For The Moment. Thank You!";
+                        $errorFood .= "There Is No Available Food For The Moment. Thank You!";
                     } else {
                         // Store in session and redirect
                         $_SESSION['favFood'] = $food;
@@ -345,7 +345,114 @@
             $food = $_SESSION['favFood'];
             unset($_SESSION['favFood']);
             require_once "views/find-food.php";
-        }        
+        } 
+
+        // order Food action : 
+        public static function order_Food_Action() {
+            $productId = null; // Default value
+        
+            if (isset($_GET['proId']) && !empty($_GET['proId'])) {
+                // Validate the ID
+                $productId = filter_var($_GET['proId'], FILTER_VALIDATE_INT);
+                if (!$productId) {
+                    header("Location: routes.php?action=cutomerHome");
+                    exit();
+                }
+            }
+            require_once "views/orderFood.php";
+        }
+
+        // Confirm Order Action:
+        public static function confirm_Order_Action() {
+            $error = "";
+            $message = "";
+            $success = "";
+            $productData = [];
+            $customer = new Customer();
+
+            // Start session if not already started
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            // Check request method
+            if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                // Validate required fields
+                if (empty($_POST['product_id']) || !filter_var($_POST['product_id'], FILTER_VALIDATE_INT)) {
+                    $error .= "Invalid Product ID! <br>";
+                }
+                if (empty($_POST['full_name']) || !preg_match('/^[\p{L}\s]+$/u', $_POST['full_name'])) {
+                    $error .= "Full name is required and can only contain letters and spaces!<br>";
+                }
+                if (empty($_POST['phone']) || !preg_match('/^\+?\d{8,15}$/', $_POST['phone'])) {
+                    $error .= "Phone number is invalid! <br>";
+                }
+                if (empty($_POST['location']) || !preg_match('/^[\p{L}0-9\s.,!?@#\(\)-]+$/u', $_POST['location'])) {
+                    $error .= "Delivery address is required!<br>";
+                }
+                if (empty($_POST['date']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $_POST['date'])) {
+                    $error .= "Invalid delivery date format! <br>";
+                } else {
+                    $today = date("Y-m-d");
+                    if ($_POST['date'] < $today) {
+                        $error .= "Delivery date cannot be in the past! <br>";
+                    }
+                }
+                if (empty($_POST['quantity']) || !filter_var($_POST['quantity'], FILTER_VALIDATE_INT) || $_POST['quantity'] <= 0) {
+                    $error .= "Quantity must be a positive number! <br>";
+                }
+
+                // If no errors, proceed with the order
+                if (empty($error)) {
+                    try {
+                        // Sanitize input
+                        $productId = intval($_POST['product_id']);
+                        $customerId = $_SESSION['customerId'] ?? null; // Fixed typo
+                        $full_name = htmlspecialchars(trim($_POST['full_name']), ENT_QUOTES, 'UTF-8');
+                        $phone = htmlspecialchars(trim($_POST['phone']), ENT_QUOTES, 'UTF-8');
+                        $deliveryAddress = htmlspecialchars(trim($_POST['location']), ENT_QUOTES, 'UTF-8');
+                        $deliveryDate = htmlspecialchars(trim($_POST['date']), ENT_QUOTES, 'UTF-8');
+                        $quantity = intval($_POST['quantity']);
+
+                        // Ensure customer is logged in
+                        if (!$customerId) {
+                            header('Location: routes.php?action=home');
+                            exit();
+                        }
+
+                        // Get product price
+                        $productData = $customer->product_Data($productId);
+                        if (!$productData) {
+                            header("Location: routes.php?action=menu");
+                            exit();
+                        }
+
+                        $productPrice = $productData['price'];
+                        $total_price = $productPrice * $quantity;
+
+                        // Confirm order
+                        $success = $customer->confirmOrder($productId, $customerId, $full_name, $phone, $deliveryAddress, $deliveryDate, $quantity, $total_price);
+                        if ($success) {
+                            $message .= "
+                                Your Order Has Been Confirmed Successfully ✔
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'routes.php?action=myOrders';
+                                    }, 1000);
+                                </script>
+                            ";
+                        } else {
+                            $error .= "Failed to confirm your order, please try again! <br>";
+                        }
+                    } catch (Exception $e) {
+                        $error .= "Something went wrong: " . htmlspecialchars($e->getMessage()) . "<br>";
+                    }
+                }
+            }
+            // Load the view
+            require_once "views/orderFood.php";
+        }
+
 
     }
 ?>
