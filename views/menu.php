@@ -17,10 +17,10 @@
 
             <!-- diplay error -->
             <?php
-                if(!empty($error)) {
+                if(!empty($errorFood)) {
                     ?>
                         <div class="alert alert-danger text-center" role="alert">
-                            <?= $error ?>
+                            <?= $errorFood ?>
                         </div>
                     <?php
                 }
