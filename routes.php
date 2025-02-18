@@ -128,6 +128,12 @@
             case "favFood" :
                 CustomersController::fav_Food_Action();
                 break;
+            case "orderFood" :
+                CustomersController::order_Food_Action();
+                break;
+            case "confirmOrder" :
+                CustomersController::confirm_Order_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
