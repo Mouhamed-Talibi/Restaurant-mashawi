@@ -33,7 +33,7 @@
             </ul>
             <!-- login / signup -->
             <div class="d-flex gap-3 align-items-center py-2">
-                <a href="routes.php?action=customerCart" class="cart text-white">
+                <a href="routes.php?action=myOrders" class="cart text-white">
                     My Cart
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
