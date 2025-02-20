@@ -177,11 +177,11 @@
                 try {
                     $productsList = $customer->explore_Food($categoryId);
                     if(empty($productsList)) {
-                        $error .= "Food Will Be Available Soon :) <br>";
+                        $error .= "Food Will Be Available Soon :)";
                     }
                     require_once "views/food.php";
                 } catch (Exception $e) {
-                    $error .= "No Availabel Products For The Moement ! <br>";
+                    $error .= "No Availabel Products For The Moement !";
                 }
             } else {
                 header("Location: routes?php?action=errorPage");
@@ -311,7 +311,7 @@
                 $food_name = trim($_POST['food-name'] ?? '');
                 // Check if empty
                 if (empty($food_name)) {
-                    $errorFood .= "You Must Enter The Name Of Your Favourite Dish!<br>";
+                    $errorFood .= "You Must Enter The Name Of Your Favourite Dish!";
                 }
                 elseif (!preg_match('/^[\p{L}\s]+$/u', $food_name)) {
                     $errorFood .= "Food Name can only contain letters and spaces!<br>";
@@ -320,7 +320,7 @@
                     $food_name = htmlspecialchars($food_name);
                     $food = $customer->findFood($food_name);
                     if (empty($food)) {
-                        $errorFood .= "There Is No Available Food For The Moment. Thank You!";
+                        $errorFood .= "The food you're looking for is not available at the moment! Thank You";
                     } else {
                         // Store in session and redirect
                         $_SESSION['favFood'] = $food;
@@ -347,20 +347,35 @@
             require_once "views/find-food.php";
         } 
 
-        // order Food action : 
+        // order food action : 
         public static function order_Food_Action() {
-            $productId = null; // Default value
-        
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
             if (isset($_GET['proId']) && !empty($_GET['proId'])) {
                 // Validate the ID
                 $productId = filter_var($_GET['proId'], FILTER_VALIDATE_INT);
                 if (!$productId) {
-                    header("Location: routes.php?action=cutomerHome");
+                    header("Location: routes.php?action=customerHome");
+                    exit();
+                }
+
+                // ✅ Check if product exists in the database before storing it in the session
+                $customer = new Customer();
+                $productData = $customer->product_Data($productId);
+
+                if ($productData) {
+                    $_SESSION['productId'] = $productId;
+                } else {
+                    header("Location: routes.php?action=customerHome");
                     exit();
                 }
             }
+            // ✅ Implement CSRF token check (if used in forms later)
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); 
             require_once "views/orderFood.php";
-        }
+        }        
 
         // Confirm Order Action:
         public static function confirm_Order_Action() {
@@ -427,7 +442,7 @@
                             exit();
                         }
 
-                        $productPrice = $productData['price'];
+                        $productPrice = $productData['product_price'];
                         $total_price = $productPrice * $quantity;
 
                         // Confirm order
@@ -451,6 +466,29 @@
             }
             // Load the view
             require_once "views/orderFood.php";
+        }
+
+        // customer order action : 
+        public static function customer_Orders_Action() {
+            $error = "";
+            $customer = new Customer();
+            $customerOrders = [];
+
+            if(session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $customerId = filter_var($_SESSION['customerId'], FILTER_VALIDATE_INT);
+            if(!$customerId) {
+                header('Location: routes.php?action=home');
+                exit();
+            } else {
+                $customerOrders = $customer->customerOrders($customerId);
+                if(empty($customerOrders)) {
+                    $error .= "You have no order for the moment !";
+                }
+            }
+            require_once "views/customerOrders.php";
         }
 
 
