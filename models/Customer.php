@@ -241,7 +241,7 @@
                 throw new Exception("Database Connection Failed!");
             }
         }   
-        
+
         // get product by id method :
         public function product_Data($productId) {
             $isConnected = $this->db_connection();
@@ -250,7 +250,7 @@
                     $stmt = $isConnected->prepare("SELECT * FROM products WHERE id=?");
                     $stmt->execute([$productId]);
                     if($stmt->rowCount() > 0) {
-                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        return $stmt->fetch(PDO::FETCH_ASSOC);
                     } else {
                         return [];
                     }
@@ -269,13 +269,35 @@
                 try {
                     $stmt = $isConntected->prepare("
                         INSERT INTO 
-                            orders(product_id, customer_id, full_name, phone, delivery_adress, delivery_date, quantity, total_price)
+                            orders(product_id, customer_id, full_name, phone, delivery_address, delivery_date, quantity, total_price)
                         VALUES
                             (? , ? , ? , ? , ? , ? , ? , ?);
                     ");
                     return $stmt->execute([$productId, $customerId, $fullName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice]);
                 } catch (Exception $e) {
-                    error_log("Error in Confirm Order : ") . $e->getMessage();
+                    error_log("Error in Confirm Order : " . $e->getMessage());
+                    return false;
+                }
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
+        }
+
+        // customer orders method : 
+        public function customerOrders($customerId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM orders WHERE cutomer_id = ?");
+                    $stmt->execute([$customerId]);
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in customer Orders : " .$e->getMessage());
+                    return [];
                 }
             } else {
                 throw new Exception("Db Connection Failed !");
