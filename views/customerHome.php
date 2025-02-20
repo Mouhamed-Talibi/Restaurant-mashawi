@@ -29,8 +29,15 @@
                     <?php
                         if (!empty($error)) {
                             ?>
-                                <div class="alert alert-danger text-center" role="alert">
-                                    <?= $error ?>
+                                <div class="container d-flex justify-content-center align-items-center vh-100">
+                                    <div class="error bg-light border border-danger rounded p-4 shadow text-center">
+                                        <div class="logo mb-3">
+                                            <img src="views/images/mashawi-logo.png" alt="mashawi-logo" class="img-fluid" style="max-width: 120px;">
+                                        </div>
+                                        <div class="error-text">
+                                            <p class="text-danger fw-bold"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+                                        </div>
+                                    </div>
                                 </div>
                             <?php
                         }
@@ -133,9 +140,14 @@
                     </div>
                     <!-- Error Message (if any) -->
                     <?php if (!empty($error)) : ?>
-                        <div class="col-12">
-                            <div class="alert alert-danger text-center" role="alert">
-                                <?= htmlspecialchars($error) ?>
+                        <div class="container d-flex justify-content-center align-items-center vh-50">
+                            <div class="error rounded p-4 text-center">
+                                <div class="logo mb-3">
+                                    <img src="views/images/mashawi-logo.png" alt="mashawi-logo" class="img-fluid" style="max-width:300px;">
+                                </div>
+                                <div class="error-text">
+                                    <p class="text-danger fw-bold"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+                                </div>
                             </div>
                         </div>
                     <?php endif; ?>
