@@ -134,6 +134,9 @@
             case "confirmOrder" :
                 CustomersController::confirm_Order_Action();
                 break;
+            case "myOrders" :
+                CustomersController::customer_Orders_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
