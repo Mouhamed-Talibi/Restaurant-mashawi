@@ -30,12 +30,21 @@
                             <?php
                         }
                     ?>
+                    <?php
+                        if(!empty($message)) {
+                            ?>
+                                <div class="alert alert-success text-center" role="alert">
+                                    <?= $message; ?>
+                                </div>
+                            <?php
+                        }
+                    ?>
 
                     <!-- Customer Name -->
                     <div class="col-12">
                         <label for="full_name" class="form-label">Full Name</label>
                         <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Enter your full name">
-                        <input type="hidden" name="product_id" id="" class="form-control" value="<?= htmlspecialchars(filter_var($productId, FILTER_VALIDATE_INT)); ?>">
+                        <input type="hidden" name="product_id" id="" class="form-control" value="<?= htmlspecialchars(filter_var($_SESSION['productId'], FILTER_VALIDATE_INT)); ?>">
                     </div>
 
                     <!-- Phone Number -->

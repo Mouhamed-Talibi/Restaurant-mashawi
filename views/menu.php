@@ -19,8 +19,15 @@
             <?php
                 if(!empty($errorFood)) {
                     ?>
-                        <div class="alert alert-danger text-center" role="alert">
-                            <?= $errorFood ?>
+                        <div class="container d-flex justify-content-center align-items-center vh-50">
+                            <div class="error bg-dark rounded p-4 text-center">
+                                <div class="logo mb-3">
+                                    <img src="views/images/mashawi-logo.png" alt="mashawi-logo" class="img-fluid" style="max-width:300px;">
+                                </div>
+                                <div class="error-text">
+                                    <p class="text-warning fw-bold"><?= htmlspecialchars($errorFood, ENT_QUOTES, 'UTF-8') ?></p>
+                                </div>
+                            </div>
                         </div>
                     <?php
                 }
@@ -69,8 +76,15 @@
                 <?php 
                     if(!empty($error)) {
                         ?>
-                            <div class="alert alert-danger text-center" role="alert">
-                                <?= $error ?>
+                            <div class="container d-flex justify-content-center align-items-center vh-50">
+                                <div class="error rounded p-4 text-center">
+                                    <div class="logo mb-3">
+                                        <img src="views/images/mashawi-logo.png" alt="mashawi-logo" class="img-fluid" style="max-width:300px;">
+                                    </div>
+                                    <div class="error-text">
+                                        <p class="text-danger text-bold"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
+                                    </div>
+                                </div>
                             </div>
                         <?php
                     }
