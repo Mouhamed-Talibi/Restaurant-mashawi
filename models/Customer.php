@@ -263,17 +263,17 @@
         }
 
         // confirm order method : 
-        public function confirmOrder($productId, $customerId, $fullName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice) {
+        public function confirmOrder($productId, $customerId, $fullName, $orderName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice) {
             $isConntected = $this->db_connection();
             if($isConntected) {
                 try {
                     $stmt = $isConntected->prepare("
                         INSERT INTO 
-                            orders(product_id, customer_id, full_name, phone, delivery_address, delivery_date, quantity, total_price)
+                            orders(product_id, customer_id, full_name, order_name, phone, delivery_address, delivery_date, quantity, total_price)
                         VALUES
-                            (? , ? , ? , ? , ? , ? , ? , ?);
+                            (? , ? , ? , ? , ? , ? , ? , ? , ?);
                     ");
-                    return $stmt->execute([$productId, $customerId, $fullName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice]);
+                    return $stmt->execute([$productId, $customerId, $fullName, $orderName, $phone, $deliveryAdress, $deliveryDate, $quantity, $totalPrice]);
                 } catch (Exception $e) {
                     error_log("Error in Confirm Order : " . $e->getMessage());
                     return false;
@@ -288,7 +288,7 @@
             $isConnected = $this->db_connection();
             if($isConnected) {
                 try {
-                    $stmt = $isConnected->prepare("SELECT * FROM orders WHERE cutomer_id = ?");
+                    $stmt = $isConnected->prepare("SELECT * FROM orders WHERE customer_id = ?");
                     $stmt->execute([$customerId]);
                     if($stmt->rowCount() > 0) {
                         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -304,4 +304,52 @@
             }
         }
 
+        // edit order method : 
+        public function editOrder($orderId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM orders WHERE id = ?");
+                    $stmt->execute([$orderId]);
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetch(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("error in edit order : " . $e->getMessage());
+                    return [];
+                }
+            } else {
+                throw new Exception("Db connectino failed !");
+            }
+        }
+
+        // upate order method : 
+        public function updateOrder($fullName, $phone, $deliveryAddress, $deliveryDate, $quantity, $total_price, $orderId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("
+                        UPDATE orders
+                        SET 
+                            full_name = ?, 
+                            phone = ?, 
+                            delivery_address = ?, 
+                            delivery_date = ?, 
+                            quantity = ?,
+                            total_price = ?
+                        WHERE id = ?;
+                    ");
+                    return $stmt->execute([$fullName, $phone, $deliveryAddress, $deliveryDate, $quantity, $total_price, $orderId]);
+                } catch (Exception $e) {
+                    error_log("Error in Update Order : " . $e->getMessage());
+                    return false;
+                }
+            } else {
+                throw new Exception("Db connection failed !");
+            }
+        }
+
+        
     }
