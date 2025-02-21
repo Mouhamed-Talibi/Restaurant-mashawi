@@ -384,7 +384,6 @@
             $success = "";
             $productData = [];
             $customer = new Customer();
-
             // Start session if not already started
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
@@ -434,19 +433,18 @@
                             header('Location: routes.php?action=home');
                             exit();
                         }
-
                         // Get product price
                         $productData = $customer->product_Data($productId);
                         if (!$productData) {
                             header("Location: routes.php?action=menu");
                             exit();
                         }
-
+                        $orderName = $productData['product_name'];
                         $productPrice = $productData['product_price'];
                         $total_price = $productPrice * $quantity;
 
                         // Confirm order
-                        $success = $customer->confirmOrder($productId, $customerId, $full_name, $phone, $deliveryAddress, $deliveryDate, $quantity, $total_price);
+                        $success = $customer->confirmOrder($productId, $customerId, $full_name, $orderName, $phone, $deliveryAddress, $deliveryDate, $quantity, $total_price);
                         if ($success) {
                             $message .= "
                                 Your Order Has Been Confirmed Successfully ✔
@@ -473,7 +471,6 @@
             $error = "";
             $customer = new Customer();
             $customerOrders = [];
-
             if(session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
@@ -489,6 +486,107 @@
                 }
             }
             require_once "views/customerOrders.php";
+        }
+
+        // edit order action : 
+        public static function edit_Order_Action() {
+            $customer = new Customer();
+            $orderDetails = [];
+
+            if(isset($_GET['ordId']) && !empty($_GET['ordId']) && filter_var($_GET['ordId'], FILTER_VALIDATE_INT)) {
+                $orderId = htmlspecialchars(trim($_GET['ordId']));
+                // get order Details :
+                $orderDetails = $customer->editOrder($orderId);
+                if(empty($orderDetails)) {
+                    header("Location: routes.php?action=myOrders");
+                    die();
+                }
+            }
+            require_once "views/editOrder.php";
+        }
+
+        // upate Order action : 
+        public static function update_Order_Action() {
+            $error = "";
+            $message = "";
+            $customer = new Customer();
+            $success = false;
+            $orderDetails = [];
+            $productData = [];
+
+            // check request method : 
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                // check empty fields : 
+                if(empty($_POST['full_name'])) { $error .= "Full Name Field Required ! <br>"; }
+                if(empty($_POST['id'])) { 
+                    header('Location: routes.php?action=myOrders'); 
+                    exit();
+                } else {
+                    $orderId = trim($_POST['id']);
+                }
+                if(empty($_POST['productId'])) { 
+                    header('Location: routes.php?action=myOrders'); 
+                    exit();
+                } else {
+                    $productId = trim($_POST['productId']);
+                }
+                if(empty($_POST['phone'])) { $error .= "Phone Number Field Required ! <br>"; }
+                if(empty($_POST['location'])) { $error .= "Delivery Address Field Required ! <br>"; }
+                if(empty($_POST['date'])) { $error .= "Delivery Date Field Required ! <br>"; }
+                if(empty($_POST['quantity'])) { $error .= "Quantity Field Required ! <br>"; }
+                // validate & sanitize inputs : 
+                if (!preg_match('/^[\p{L}\s]+$/u', $_POST['full_name'])) {
+                    $error .= "Full name can only contain letters and spaces!<br>";
+                }
+                if (!preg_match('/^\+?\d{8,15}$/', $_POST['phone'])) {
+                    $error .= "Phone number is invalid! <br>";
+                }
+                if (!preg_match('/^[\p{L}0-9\s.,!?@#()\'-]+$/u', $_POST['location'])) {
+                    $error .= "Delivery address is invalid!<br>";
+                }
+                // handle date : 
+                $today = date("Y-m-d");
+                if ($_POST['date'] < $today) {
+                    $error .= "Delivery date cannot be in the past! <br>";
+                }
+                if (!filter_var($_POST['quantity'], FILTER_VALIDATE_INT) || $_POST['quantity'] <= 0) {
+                    $error .= "Quantity must be a positive number! <br>";
+                }
+
+                // if no errors : 
+                if(empty($error)) {
+                    try {
+                        $newName = htmlspecialchars($_POST['full_name']);
+                        $newPhone = trim($_POST['phone']);
+                        $newDeliveryAdress = htmlspecialchars($_POST['location']);
+                        $newDate = htmlspecialchars($_POST['date']);
+                        $newQuantity = trim($_POST['quantity']);
+
+                        // totale price :
+                        $productData = $customer->product_Data($productId);
+                        $productPrice = $productData['product_price'];
+                        $totalPrice = $productPrice * $newQuantity;
+                        // update order :
+                        $success = $customer->updateOrder($newName, $newPhone, $newDeliveryAdress, $newDate, $newQuantity, $totalPrice, $orderId);
+                        if ($success) {
+                            $message .= "
+                                Your Order Has Been Updated Successfully ✔
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'routes.php?action=myOrders';
+                                    }, 500);
+                                </script>
+                            ";
+                        } else {
+                            $error .= "Failed to Update your order, please try again! <br>";
+                        }
+                    } catch (Exception $e) {
+                        throw new Exception("Soemthing went wrong with updating your order : ");
+                    }
+                }
+                $orderDetails = $customer->editOrder($orderId);
+            }
+            require_once "views/editOrder.php";
         }
 
 
