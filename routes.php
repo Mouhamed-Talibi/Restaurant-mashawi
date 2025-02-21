@@ -137,6 +137,16 @@
             case "myOrders" :
                 CustomersController::customer_Orders_Action();
                 break;
+            case "editOrder" :
+                if (isset($_GET['ordId']) && is_numeric($_GET['ordId'])) {
+                    CustomersController::edit_Order_Action();
+                } else {
+                    CustomersController::page_Error_Action();
+                }
+                break;
+            case "updateOrder" :
+                CustomersController::update_Order_Action();
+                break;
             case "logout":
                 CustomersController::logout_Action();
                 break;
