@@ -164,7 +164,8 @@
                                     <img src="<?= htmlspecialchars($product['product_image']) ?>" 
                                         class="card-img-top img-fluid" 
                                         alt="<?= htmlspecialchars($product['product_name']) ?>" 
-                                        style="height: 200px; object-fit: cover;">
+                                        style="height: 200px; object-fit: cover;"
+                                        loading="lazy">
                                     <div class="card-body d-flex flex-column p-3">
                                         <h5 class="card-title fw-bold mb-2"><?= htmlspecialchars($product['product_name']) ?></h5>
                                         <p class="card-text text-secondary mt-2 mb-3">
