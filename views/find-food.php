@@ -27,7 +27,8 @@
                                     <img src="<?= htmlspecialchars($product['product_image']) ?>" 
                                         alt="<?= htmlspecialchars($product['product_name']) ?>" 
                                         class="img-fluid rounded w-100 h-100" 
-                                        style="object-fit: cover;">
+                                        style="object-fit: cover;"
+                                        loading="lazy">
                                 </div>
 
                                 <!-- Food Details -->
