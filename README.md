@@ -34,7 +34,7 @@ I am excited to share my latest project: a **Restaurant Management System**! Thi
 ### 1️⃣ Clone the Repository
 ```sh
  git clone https://github.com/Mouhamed-Talibi/Restaurant-mashawi.git
- cd restaurant-management-system
+ cd Restaurant-mashawi
 ```
 ### 2️⃣ Setup Database
 - Import the **database.sql** file into MySQL.
@@ -48,18 +48,18 @@ http://localhost/Restaurant-mashawi/
 
 ## 📸 Screenshots
 🔹 **Customer Dashboard**  
-![Customer Dashboard](views/images/customer_dashboard.png)
+![Customer Dashboard](views/images/customer-home.png)
 
 🔹 **Admin Panel**  
-![Admin Panel](views/images/admin_panel.png)
+![Admin Panel](views/images/admin-panel.png)
 
 ## 🤝 Contributing
 Feel free to **fork** this repository and submit a **pull request** if you'd like to improve the project! Any feedback is welcome. 😊
 
 ## 📧 Contact
-- **LinkedIn**: [Your LinkedIn Profile]([https://linkedin.com/in/yourprofile](https://www.linkedin.com/in/mohamed-talibi-639902333/))
-- **GitHub**: [Your GitHub Profile](https://github.com/Mouhamed-Talibi)
-- **Instagram**: [Your GitHub Profile](https://www.instagram.com/easy.code_/)
+- **LinkedIn**: [My LinkedIn Profile]([https://linkedin.com/in/yourprofile](https://www.linkedin.com/in/mohamed-talibi-639902333/))
+- **GitHub**: [My GitHub Profile](https://github.com/Mouhamed-Talibi)
+- **Instagram**: [My Instagram Profile](https://www.instagram.com/easy.code_/)
 
 ---
 📌 *If you like this project, don't forget to ⭐ it!*
