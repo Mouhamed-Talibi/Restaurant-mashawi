@@ -589,6 +589,40 @@
             require_once "views/editOrder.php";
         }
 
+        // cancel order action : 
+        public static function cancel_Order_Action() {
+            $error = "";
+            $customer = new Customer();
+            $message = "";
+            $success = false;
+
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                if(empty($_POST['ordId']) || !filter_var($_POST['ordId'], FILTER_VALIDATE_INT)) {
+                    header("Location: routes.php?action=myOrders");
+                    exit();
+                } else {
+                    $orderId = (int) trim($_POST['ordId']);
+                    try {
+                        $success = $customer->cancelOrder($orderId);
+                        if($success) {
+                            $message .= "
+                                Your Order Has Been Canceled Successfully ✔
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'routes.php?action=myOrders';
+                                    }, 500);
+                                </script>
+                            ";
+                        } else {
+                            $error .= "Failed to cancel your order, please try again! <br>";
+                        }
+                    } catch (Exception $e) {
+                        $error .= "Something went wrong, please try again ! <br>";
+                    }
+                }
+            }
+            require_once "views/customerOrders.php";
+        }
 
     }
 ?>
