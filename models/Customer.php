@@ -351,5 +351,17 @@
             }
         }
 
-        
+        // cancel order method : 
+        public function cancelOrder($orderId) {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("DELETE FROM orders WHERE id = ?");
+                    return $stmt->execute([$orderId]);
+                } catch (Exception $e) {
+                    error_log("Error in cancel Order :" . $e->getMessage());
+                    return false;
+                }
+            }
+        }
     }
