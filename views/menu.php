@@ -99,7 +99,7 @@
                             <div class="col">
                                 <div class="menu-card p-4 bg-white shadow rounded h-100">
                                     <div class="image mb-3">
-                                        <img src="<?= htmlspecialchars($category['category_image'])?>" alt="Salads" class="img-fluid rounded">
+                                        <img src="<?= htmlspecialchars($category['category_image'])?>" alt="Salads" class="img-fluid rounded" loading="lazy">
                                     </div>
                                     <div class="infos">
                                         <h3 class="fw-bold"><?= htmlspecialchars($category['category_name'])?></h3>
