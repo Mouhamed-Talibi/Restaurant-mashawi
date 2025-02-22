@@ -79,6 +79,9 @@
             case "deleteProduct" :
                 AdminController::delete_Product_Action();
                 break;
+            case "deleteMessages" :
+                AdminController::delete_Messages_Action();
+                break;
             case "destroyProduct" :
                 AdminController::destroy_Product_Action();
                 break;
@@ -146,6 +149,9 @@
                 break;
             case "updateOrder" :
                 CustomersController::update_Order_Action();
+                break;
+            case "cancelOrder" :
+                CustomersController::cancel_Order_Action();
                 break;
             case "logout":
                 CustomersController::logout_Action();
