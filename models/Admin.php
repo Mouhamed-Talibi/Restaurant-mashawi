@@ -373,5 +373,118 @@
                 throw new Exception("Db Connection Failed !");
             }
         }
+
+        // total orders method :
+        public function totalOrders() {
+            $isConnected = $this->db_connection();
+            if ($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM orders");
+                    $stmt->execute();
+                    return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+                } catch (Exception $e) {
+                    error_log("Error in total orders: " . $e->getMessage());
+                    return [];
+                }
+            } else {
+                throw new Exception("DB connection failed!");
+            }
+        }
+
+        // pending orders method :
+        public function pendingOrders() {
+            $isConnected = $this->db_connection();
+            if ($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM orders WHERE status = 'Pending'");
+                    $stmt->execute();
+                    return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+                } catch (Exception $e) {
+                    error_log("Error in Pending orders: " . $e->getMessage());
+                    return [];
+                }
+            } else {
+                throw new Exception("DB connection failed!");
+            }
+        }
+
+        // recent orders method : 
+        public function recentOrders() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM orders ORDER BY order_date DESC LIMIT 5");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in recent orders :" . $e->getMessage());
+                    return [];
+                }
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
+        }
+
+        // messages list method : 
+        public function messagesList() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM messages ORDER BY send_at DESC");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in messages list : ") . $e->getMessage();
+                    return [];
+                }
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
+        }
+
+        // delete messages method : 
+        public function deleteMessages() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("DELETE FROM messages");
+                    return $stmt->execute();
+                } catch (Exception $e) {
+                    error_log("Error in delete messages : ") . $e->getMessage();
+                    return false;
+                }
+            } else {
+                throw new Exception("Db Connection Failed !");
+            }
+        }
+
+        // orders list method : 
+        public function ordersList() {
+            $isConnected = $this->db_connection();
+            if($isConnected) {
+                try {
+                    $stmt = $isConnected->prepare("SELECT * FROM orders");
+                    $stmt->execute();
+                    if($stmt->rowCount() > 0) {
+                        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } else {
+                        return [];
+                    }
+                } catch (Exception $e) {
+                    error_log("Error in orders list ! " . $e->getMessage());
+                    return [];
+                }
+            } else {
+                throw new Exception("Db connection failed ! ");
+            }
+        }
     }
 ?>
