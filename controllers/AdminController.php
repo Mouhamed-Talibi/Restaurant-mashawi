@@ -275,11 +275,30 @@
 
         // orders menu action :
         public static function admin_Orders_Action() {
+            $error = "";
+            $admin = new Admin();
+            $ordersList =  [];
+
+            try {
+                $ordersList = $admin->ordersList();
+                if(empty($ordersList)) {
+                    $error .= "No Orders Available For The Moment !";
+                }
+            } catch (Exception $e) {
+                $error .= "Something went wrong in orders list : " . $e->getMessage();
+            }
             require_once "views/admin/orders.php";
+            return $ordersList;
         }
 
         // orders messages action :
         public static function admin_Messages_Action() {
+            $error = "";
+            $admin = new Admin();
+            $messagesList = $admin->messagesList();
+            if(empty($messagesList)) {
+                $error .= "No Messages Available For The Moment !";
+            }
             require_once "views/admin/messages.php";
         }
 
@@ -911,5 +930,74 @@
             require_once "views/admin/change_password.php";
         }
 
+        // total orders action : 
+        public static function total_Orders_Action() {
+            $error = "";
+            $admin = new Admin();
+            $totalCount = 0;
+            try {
+                $totaleOrders = $admin->totalOrders();
+                $totalCount = count($totaleOrders);
+            } catch (Exception $e) {
+                $error .= "Something Went Wrong: " . $e->getMessage();
+            }
+        
+            require_once "views/admin/dashboard.php";
+            return $totalCount;
+        }  
+
+        // total orders action : 
+        public static function pending_Orders_Action() {
+            $error = "";
+            $admin = new Admin();
+            $pendingOrders = 0;
+            try {
+                $totaleOrders = $admin->pendingOrders();
+                $pendingOrders = count($totaleOrders);
+            } catch (Exception $e) {
+                $error .= "Something Went Wrong: " . $e->getMessage();
+            }
+        
+            require_once "views/admin/dashboard.php";
+            return $pendingOrders;
+        }  
+
+        // recent orders action : 
+        public static function recent_Orders_Action() {
+            $error = "";
+            $admin = new Admin();
+            $recentOrders = [];
+            try {
+                $recentOrders = $admin->recentOrders();
+                if(empty($recentOrders)) {
+                    $error .= "No Recent Orders Found For The Moment ! ";
+                }
+            } catch (Exception $e) {
+                $error .= "Something Went Wrong: " . $e->getMessage();
+            }
+            require_once "views/admin/dashboard.php";
+            return $recentOrders;
+        }
+
+        // delete messages action  :
+        public static function delete_Messages_Action() {
+            $admin = new Admin();
+            $success = false;
+            $error = "";
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                try {
+                    $success = $admin->deleteMessages();
+                    if($success) {
+                        header("Location: routes.php?action=adminMessages");
+                        exit;
+                    } else {
+                        $error .= "Failed to delete the messages, try again Later !";
+                    }
+                } catch (Exception $e) {
+                    throw new Exception("Soemthing went wrong with deleting all messages !");
+                }
+            }
+            require_once "views/admin/messages.php";
+        }
     }
 ?>
